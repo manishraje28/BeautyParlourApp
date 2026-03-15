@@ -54,10 +54,34 @@
             android:padding="16dp"
             android:visibility="gone">
 
-            <View
+            <!-- Avatar: ImageView + pencil edit button overlay -->
+            <FrameLayout
                 android:layout_width="88dp"
-                android:layout_height="88dp"
-                android:background="@drawable/bg_profile_placeholder" />
+                android:layout_height="88dp">
+
+                <!-- Gesture 5: Pinch Zoom target -->
+                <ImageView
+                    android:id="@+id/img_avatar"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:background="@drawable/bg_profile_placeholder"
+                    android:scaleType="centerCrop" />
+
+                <!-- Tap to pick a new photo from gallery -->
+                <TextView
+                    android:id="@+id/btn_change_photo"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@color/dark_pink"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="&#10000;"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_profile_name"
@@ -83,6 +107,17 @@
                 android:layout_marginTop="14dp"
                 android:text="Logout" />
         </LinearLayout>
+
+        <!-- Gesture 4: Swipe Left/Right hint -->
+        <TextView
+            style="@style/AppBodyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:alpha="0.55"
+            android:gravity="center"
+            android:text="&#8592; Swipe left to Book  |  Swipe right for Home &#8594;"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

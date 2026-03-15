@@ -24,44 +24,40 @@
                 android:text="Our Services" />
 
             <TextView
-                style="@style/AppCardText"
-                android:layout_width="match_parent"
+                style="@style/AppBodyText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_card"
-                android:text="Haircut - ₹499\nTrendy haircut with quick style finish." />
+                android:layout_marginTop="6dp"
+                android:alpha="0.65"
+                android:text="✦ Long press a service for quick details &amp; booking"
+                android:textSize="12sp" />
 
-            <TextView
-                style="@style/AppCardText"
-                android:layout_width="match_parent"
+            <!-- Shown while API call is in progress -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_card"
-                android:text="Facial - ₹899\nDeep cleansing and glowing skin treatment." />
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:visibility="visible" />
 
+            <!-- Shown on network error or empty response -->
             <TextView
-                style="@style/AppCardText"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_error"
+                style="@style/AppBodyText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_card"
-                android:text="Bridal Makeup - ₹5999\nPremium bridal package for your big day." />
+                android:layout_marginTop="24dp"
+                android:text=""
+                android:visibility="gone" />
 
-            <TextView
-                style="@style/AppCardText"
+            <!-- Service cards are added here dynamically from API response -->
+            <LinearLayout
+                android:id="@+id/services_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_card"
-                android:text="Hair Spa - ₹1299\nNourishing spa for smooth, healthy hair." />
-
-            <TextView
-                style="@style/AppCardText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_card"
-                android:text="Waxing - ₹699\nGentle waxing for clean and soft skin." />
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
 
         </LinearLayout>
     </ScrollView>

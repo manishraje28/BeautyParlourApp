@@ -85,6 +85,14 @@
             android:layout_marginTop="14dp"
             android:text="Sign Up" />
 
+        <ProgressBar
+            android:id="@+id/pb_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tv_go_login"
             style="@style/AppLinkText"

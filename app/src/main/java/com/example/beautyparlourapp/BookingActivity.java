@@ -35,9 +35,21 @@ public class BookingActivity extends AppCompatActivity {
     private void setupServiceSpinner() {
         Spinner serviceSpinner = findViewById(R.id.spinner_service);
         String[] services = {"Haircut", "Facial", "Bridal Makeup", "Hair Spa", "Waxing"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, services);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, services);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         serviceSpinner.setAdapter(adapter);
+
+        // Pre-select service passed via gesture shortcut (Double Tap / Long Press)
+        String preSelected = getIntent().getStringExtra("selected_service");
+        if (preSelected != null) {
+            for (int i = 0; i < services.length; i++) {
+                if (services[i].equals(preSelected)) {
+                    serviceSpinner.setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void setupDateAndTimePickers() {
@@ -48,65 +60,82 @@ public class BookingActivity extends AppCompatActivity {
         Button pickTime = findViewById(R.id.btn_pick_time);
 
         pickDate.setOnClickListener(v -> {
-            int year = calendar.get(Calendar.YEAR);
+            int year  = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int day   = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    BookingActivity.this,
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        calendar.set(selectedYear, selectedMonth, selectedDay);
-                        String formattedDate = String.format(Locale.getDefault(), "%02d/%02d/%04d",
-                                selectedDay, selectedMonth + 1, selectedYear);
-                        selectedDateText.setText(formattedDate);
-                    },
-                    year, month, day
-            );
-            datePickerDialog.show();
+            new DatePickerDialog(this, (view, y, m, d) -> {
+                calendar.set(y, m, d);
+                selectedDateText.setText(
+                        String.format(Locale.getDefault(), "%02d/%02d/%04d", d, m + 1, y));
+            }, year, month, day).show();
         });
 
         pickTime.setOnClickListener(v -> {
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int hour   = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                    BookingActivity.this,
-                    (view, selectedHour, selectedMinute) -> {
-                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
-                        calendar.set(Calendar.MINUTE, selectedMinute);
-                        String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
-                        selectedTimeText.setText(formattedTime);
-                    },
-                    hour,
-                    minute,
-                    false
-            );
-            timePickerDialog.show();
+            new TimePickerDialog(this, (view, h, min) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, h);
+                calendar.set(Calendar.MINUTE, min);
+                selectedTimeText.setText(
+                        String.format(Locale.getDefault(), "%02d:%02d", h, min));
+            }, hour, minute, false).show();
         });
     }
 
     private void setupBookingButton() {
-        Spinner serviceSpinner = findViewById(R.id.spinner_service);
-        Button bookButton = findViewById(R.id.btn_book);
+        Spinner  serviceSpinner = findViewById(R.id.spinner_service);
+        Button   bookButton     = findViewById(R.id.btn_book);
 
         bookButton.setOnClickListener(v -> {
-            String selectedService = String.valueOf(serviceSpinner.getSelectedItem());
-            String selectedDate = selectedDateText.getText().toString();
-            String selectedTime = selectedTimeText.getText().toString();
+            String service = String.valueOf(serviceSpinner.getSelectedItem());
+            String date    = selectedDateText.getText().toString();
+            String time    = selectedTimeText.getText().toString();
 
-            if (selectedDate.equals(getString(R.string.not_selected)) || selectedTime.equals(getString(R.string.not_selected))) {
+            if (date.equals(getString(R.string.not_selected))
+                    || time.equals(getString(R.string.not_selected))) {
                 Toast.makeText(this, "Please select date and time", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String confirmation = "Appointment booked for " + selectedService + " on " + selectedDate + " at " + selectedTime;
-            Toast.makeText(this, confirmation, Toast.LENGTH_LONG).show();
+            bookButton.setEnabled(false);
+
+            // Save to Firestore if user is logged in
+            if (FirebaseManager.getInstance().isLoggedIn()) {
+                FirebaseManager.getInstance().saveBooking(service, date, time,
+                        new FirebaseManager.BookingCallback() {
+                            @Override
+                            public void onSuccess() {
+                                bookButton.setEnabled(true);
+                                Toast.makeText(BookingActivity.this,
+                                        "Booking confirmed for " + service
+                                                + " on " + date + " at " + time,
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailure(String error) {
+                                bookButton.setEnabled(true);
+                                Toast.makeText(BookingActivity.this,
+                                        "Booking saved locally. " + error,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+            } else {
+                // Not logged in — show local confirmation only
+                bookButton.setEnabled(true);
+                Toast.makeText(this,
+                        "Appointment booked for " + service
+                                + " on " + date + " at " + time,
+                        Toast.LENGTH_LONG).show();
+            }
         });
     }
 
     private void attachFooter() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
                 .replace(R.id.footer_container, new FooterFragment())
                 .commit();
     }
