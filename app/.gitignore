@@ -1,1 +1,4 @@
 /build
+
+# Firebase config — contains API keys, never commit this
+google-services.json
