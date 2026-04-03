@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Bharati\'s Beauty Parlour</string>
     <string name="salon_name">Bharati\'s Beauty Parlour</string>
-    <string name="welcome_title">Welcome to Bharati\'s Beauty Parlour</string>
+    <string name="salon_tagline">Where Elegance Meets Care</string>
+    <string name="welcome_title">Welcome to\nBharati\'s Beauty Parlour</string>
+    <string name="welcome_subtitle">Your journey to radiance begins here</string>
     <string name="not_selected">Not selected</string>
+    <string name="empty_appointments_title">No appointments yet</string>
+    <string name="empty_appointments_subtitle">Book your first beauty session</string>
+    <string name="popular_services">Popular Services</string>
+    <string name="special_offers">Special Offers</string>
+    <string name="section_hint_double_tap">✦ Double tap a card to book instantly</string>
+    <string name="enter_salon">Enter Salon</string>
 </resources>

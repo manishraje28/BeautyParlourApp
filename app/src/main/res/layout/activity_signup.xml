@@ -1,106 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_background_pink"
-    android:fillViewport="true">
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/AppTitleText"
-            android:layout_width="wrap_content"
+        <!-- ═══ Curved Pink Header ═══ -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:text="Sign Up" />
+            android:background="@drawable/bg_header_curved"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="40dp"
+            android:paddingBottom="44dp">
 
-        <EditText
-            android:id="@+id/et_signup_full_name"
-            style="@style/AppInputField"
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="Sparkle"
+                android:src="@drawable/ic_sparkle"
+                android:tint="@color/white" />
+
+            <TextView
+                style="@style/AppHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="Create Account" />
+
+            <TextView
+                style="@style/AppHeaderSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Join our beauty community" />
+        </LinearLayout>
+
+        <!-- ═══ Sign Up Form Card ═══ -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="20dp"
-            android:drawableStart="@android:drawable/ic_menu_myplaces"
-            android:hint="Full Name"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/et_signup_phone"
-            style="@style/AppInputField"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:drawableStart="@android:drawable/ic_menu_call"
-            android:hint="Phone Number"
-            android:inputType="phone" />
-
-        <EditText
-            android:id="@+id/et_signup_email"
-            style="@style/AppInputField"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:drawableStart="@android:drawable/ic_dialog_email"
-            android:hint="Email"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/et_signup_password"
-            style="@style/AppInputField"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:drawableStart="@android:drawable/ic_lock_lock"
-            android:hint="Password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/et_signup_confirm_password"
-            style="@style/AppInputField"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:drawableStart="@android:drawable/ic_lock_lock"
-            android:hint="Confirm Password"
-            android:inputType="textPassword" />
-
-        <CheckBox
-            android:id="@+id/cb_terms"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="I agree to Terms &amp; Conditions"
-            android:textColor="@color/text_dark" />
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="-20dp"
+            app:cardBackgroundColor="@color/surface_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="6dp">
 
-        <Button
-            android:id="@+id/btn_signup"
-            style="@style/AppPrimaryButton"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    style="@style/AppSectionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sign Up" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/accent_gold" />
+
+                <EditText
+                    android:id="@+id/et_signup_full_name"
+                    style="@style/AppInputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="22dp"
+                    android:drawableStart="@android:drawable/ic_menu_myplaces"
+                    android:drawablePadding="12dp"
+                    android:hint="Full Name"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/et_signup_phone"
+                    style="@style/AppInputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:drawableStart="@android:drawable/ic_menu_call"
+                    android:drawablePadding="12dp"
+                    android:hint="Phone Number"
+                    android:inputType="phone" />
+
+                <EditText
+                    android:id="@+id/et_signup_email"
+                    style="@style/AppInputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:drawableStart="@android:drawable/ic_dialog_email"
+                    android:drawablePadding="12dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+
+                <EditText
+                    android:id="@+id/et_signup_password"
+                    style="@style/AppInputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:drawableStart="@android:drawable/ic_lock_lock"
+                    android:drawablePadding="12dp"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+
+                <EditText
+                    android:id="@+id/et_signup_confirm_password"
+                    style="@style/AppInputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:drawableStart="@android:drawable/ic_lock_lock"
+                    android:drawablePadding="12dp"
+                    android:hint="Confirm Password"
+                    android:inputType="textPassword" />
+
+                <CheckBox
+                    android:id="@+id/cb_terms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:buttonTint="@color/primary_pink"
+                    android:text="I agree to Terms &amp; Conditions"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btn_signup"
+                    style="@style/AppPrimaryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="18dp"
+                    android:text="Create Account" />
+
+                <ProgressBar
+                    android:id="@+id/pb_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/bg_gold_divider" />
+
+                <TextView
+                    android:id="@+id/tv_go_login"
+                    style="@style/AppLinkText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="14dp"
+                    android:text="Already have account? Login" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Bottom spacing -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="14dp"
-            android:text="Sign Up" />
-
-        <ProgressBar
-            android:id="@+id/pb_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_go_login"
-            style="@style/AppLinkText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:text="Already have account? Login" />
+            android:layout_height="32dp" />
 
     </LinearLayout>
 </ScrollView>

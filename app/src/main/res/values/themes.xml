@@ -2,11 +2,17 @@
     <style name="Base.Theme.BeautyParlourApp" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/primary_pink</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/light_background_pink</item>
-        <item name="colorOnPrimaryContainer">@color/text_dark</item>
-        <item name="colorSecondary">@color/dark_pink</item>
-        <item name="android:statusBarColor">@color/primary_pink</item>
-        <item name="android:navigationBarColor">@color/light_background_pink</item>
+        <item name="colorPrimaryContainer">@color/background</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
+        <item name="colorSecondary">@color/accent_gold</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="Theme.BeautyParlourApp" parent="Base.Theme.BeautyParlourApp" />

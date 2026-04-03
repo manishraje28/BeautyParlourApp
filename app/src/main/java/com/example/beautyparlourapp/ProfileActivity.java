@@ -316,6 +316,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Glide.with(this).clear(imgAvatar);
                 updateProfileUI();
             });
+
+            Button viewUsersButton = findViewById(R.id.btn_view_users);
+            viewUsersButton.setOnClickListener(v ->
+                    startActivity(new Intent(ProfileActivity.this, UsersActivity.class))
+            );
         } else {
             loggedOutContainer.setVisibility(View.VISIBLE);
             loggedInContainer.setVisibility(View.GONE);

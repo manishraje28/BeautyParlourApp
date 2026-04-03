@@ -40,7 +40,6 @@ public class BookingActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         serviceSpinner.setAdapter(adapter);
 
-        // Pre-select service passed via gesture shortcut (Double Tap / Long Press)
         String preSelected = getIntent().getStringExtra("selected_service");
         if (preSelected != null) {
             for (int i = 0; i < services.length; i++) {
@@ -85,8 +84,8 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void setupBookingButton() {
-        Spinner  serviceSpinner = findViewById(R.id.spinner_service);
-        Button   bookButton     = findViewById(R.id.btn_book);
+        Spinner serviceSpinner = findViewById(R.id.spinner_service);
+        Button bookButton = findViewById(R.id.btn_book);
 
         bookButton.setOnClickListener(v -> {
             String service = String.valueOf(serviceSpinner.getSelectedItem());
@@ -101,35 +100,25 @@ public class BookingActivity extends AppCompatActivity {
 
             bookButton.setEnabled(false);
 
-            // Save to Firestore if user is logged in
-            if (FirebaseManager.getInstance().isLoggedIn()) {
-                FirebaseManager.getInstance().saveBooking(service, date, time,
-                        new FirebaseManager.BookingCallback() {
-                            @Override
-                            public void onSuccess() {
-                                bookButton.setEnabled(true);
-                                Toast.makeText(BookingActivity.this,
-                                        "Booking confirmed for " + service
-                                                + " on " + date + " at " + time,
-                                        Toast.LENGTH_LONG).show();
-                            }
+            // Create booking directly in Firestore
+            FirebaseManager.getInstance().createBooking(service, date, time,
+                    new FirebaseManager.BookingCallback() {
+                        @Override
+                        public void onSuccess() {
+                            bookButton.setEnabled(true);
+                            Toast.makeText(BookingActivity.this,
+                                    "✓ Booking confirmed for " + service,
+                                    Toast.LENGTH_LONG).show();
+                        }
 
-                            @Override
-                            public void onFailure(String error) {
-                                bookButton.setEnabled(true);
-                                Toast.makeText(BookingActivity.this,
-                                        "Booking saved locally. " + error,
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
-            } else {
-                // Not logged in — show local confirmation only
-                bookButton.setEnabled(true);
-                Toast.makeText(this,
-                        "Appointment booked for " + service
-                                + " on " + date + " at " + time,
-                        Toast.LENGTH_LONG).show();
-            }
+                        @Override
+                        public void onFailure(String error) {
+                            bookButton.setEnabled(true);
+                            Toast.makeText(BookingActivity.this,
+                                    "Booking failed: " + error,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
         });
     }
 

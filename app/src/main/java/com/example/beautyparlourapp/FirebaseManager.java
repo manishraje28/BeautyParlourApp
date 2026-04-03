@@ -1,36 +1,45 @@
 package com.example.beautyparlourapp;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Central helper for all Firebase operations:
  *   - Authentication  (sign up / login / logout)
- *   - Firestore       (save & fetch user profile, save bookings)
+ *   - Firestore       (save & fetch user profile, save bookings, fetch services, fetch offers)
  *   - Storage         (upload profile photo)
  */
 public class FirebaseManager {
 
+    private static final String TAG = "FirebaseManager";
     private static FirebaseManager instance;
 
     private final FirebaseAuth     auth;
     private final FirebaseFirestore db;
     private final FirebaseStorage  storage;
 
+    private boolean defaultDataSeeded = false;
+
     private FirebaseManager() {
         auth    = FirebaseAuth.getInstance();
         db      = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+        seedDefaultDataIfNeeded();
     }
 
     public static synchronized FirebaseManager getInstance() {
@@ -41,6 +50,158 @@ public class FirebaseManager {
     // ── Convenience getters ───────────────────────────────────────────────────
     public FirebaseUser getCurrentUser()  { return auth.getCurrentUser(); }
     public boolean      isLoggedIn()      { return auth.getCurrentUser() != null; }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // SEED DEFAULT DATA (services & offers) if Firestore collections are empty
+    // ══════════════════════════════════════════════════════════════════════════
+
+    private void seedDefaultDataIfNeeded() {
+        if (defaultDataSeeded) return;
+        defaultDataSeeded = true;
+
+        // Seed services if empty
+        db.collection("services").limit(1).get()
+                .addOnSuccessListener(snap -> {
+                    if (snap.isEmpty()) {
+                        Log.d(TAG, "Seeding default services...");
+                        seedDefaultServices();
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error checking services: " + e.getMessage()));
+
+        // Seed offers if empty
+        db.collection("offers").limit(1).get()
+                .addOnSuccessListener(snap -> {
+                    if (snap.isEmpty()) {
+                        Log.d(TAG, "Seeding default offers...");
+                        seedDefaultOffers();
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error checking offers: " + e.getMessage()));
+    }
+
+    private void seedDefaultServices() {
+        String[][] services = {
+                {"Haircut", "499", "45 mins", "Classic styling and finish", "Hair"},
+                {"Facial", "899", "60 mins", "Deep cleansing and glowing skin treatment", "Skincare"},
+                {"Bridal Makeup", "5999", "180 mins", "Complete bridal look by certified artists", "Makeup"},
+                {"Hair Spa", "1299", "90 mins", "Nourishing spa for smooth, healthy hair", "Hair"},
+                {"Waxing", "699", "30 mins", "Gentle waxing for clean and soft skin", "Hair Removal"}
+        };
+
+        for (String[] s : services) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("name", s[0]);
+            data.put("price", Integer.parseInt(s[1]));
+            data.put("duration", s[2]);
+            data.put("description", s[3]);
+            data.put("category", s[4]);
+            db.collection("services").add(data)
+                    .addOnSuccessListener(ref -> Log.d(TAG, "Service seeded: " + s[0]))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to seed service: " + e.getMessage()));
+        }
+    }
+
+    private void seedDefaultOffers() {
+        String[][] offers = {
+                {"20% off Facials", "2026-12-31", "GLOW20", "20"},
+                {"15% off Hair Spa", "2026-12-31", "RELAX15", "15"},
+                {"Free Haircut with Spa", "2026-12-31", "COMBO50", "50"}
+        };
+
+        for (String[] o : offers) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("title", o[0]);
+            data.put("validTill", o[1]);
+            data.put("code", o[2]);
+            data.put("discount", Integer.parseInt(o[3]));
+            db.collection("offers").add(data)
+                    .addOnSuccessListener(ref -> Log.d(TAG, "Offer seeded: " + o[0]))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to seed offer: " + e.getMessage()));
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // FETCH SERVICES (direct Firestore)
+    // ══════════════════════════════════════════════════════════════════════════
+
+    public void fetchServices(ServicesCallback callback) {
+        db.collection("services").get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Map<String, Object>> services = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Map<String, Object> service = new HashMap<>();
+                        service.put("id", doc.getId());
+                        service.put("name", doc.getString("name"));
+                        Object priceObj = doc.get("price");
+                        int price = 0;
+                        if (priceObj instanceof Long) price = ((Long) priceObj).intValue();
+                        else if (priceObj instanceof Double) price = ((Double) priceObj).intValue();
+                        service.put("price", price);
+                        service.put("duration", doc.getString("duration"));
+                        service.put("description", doc.getString("description"));
+                        service.put("category", doc.getString("category"));
+                        services.add(service);
+                    }
+                    callback.onSuccess(services);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // FETCH OFFERS (direct Firestore)
+    // ══════════════════════════════════════════════════════════════════════════
+
+    public void fetchOffers(OffersCallback callback) {
+        db.collection("offers").get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Map<String, Object>> offers = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Map<String, Object> offer = new HashMap<>();
+                        offer.put("id", doc.getId());
+                        offer.put("title", doc.getString("title"));
+                        offer.put("validTill", doc.getString("validTill"));
+                        offer.put("code", doc.getString("code"));
+                        Object discountObj = doc.get("discount");
+                        int discount = 0;
+                        if (discountObj instanceof Long) discount = ((Long) discountObj).intValue();
+                        else if (discountObj instanceof Double) discount = ((Double) discountObj).intValue();
+                        offer.put("discount", discount);
+                        offers.add(offer);
+                    }
+                    callback.onSuccess(offers);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // CREATE BOOKING (direct Firestore — top-level bookings collection)
+    // ══════════════════════════════════════════════════════════════════════════
+
+    public void createBooking(String service, String date, String time,
+                              BookingCallback callback) {
+        String userId;
+        if (isLoggedIn()) {
+            userId = getCurrentUser().getUid();
+        } else {
+            userId = UUID.randomUUID().toString();
+        }
+
+        Map<String, Object> booking = new HashMap<>();
+        booking.put("userId",    userId);
+        booking.put("service",   service);
+        booking.put("date",      date);
+        booking.put("time",      time);
+        booking.put("status",    "confirmed");
+        booking.put("createdAt", new Timestamp(new Date()));
+
+        db.collection("bookings").add(booking)
+                .addOnSuccessListener(ref -> {
+                    Log.d(TAG, "Booking created: " + ref.getId());
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
 
     // ── Sign Up ───────────────────────────────────────────────────────────────
     public void signUp(String name, String phone, String email,
@@ -121,25 +282,10 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // ── Save Booking → Firestore ──────────────────────────────────────────────
+    // ── Save Booking → Firestore (legacy method kept for compatibility) ──────
     public void saveBooking(String service, String date, String time,
                             BookingCallback callback) {
-        FirebaseUser user = getCurrentUser();
-        if (user == null) { callback.onFailure("Not logged in."); return; }
-
-        Map<String, Object> booking = new HashMap<>();
-        booking.put("service",   service);
-        booking.put("date",      date);
-        booking.put("time",      time);
-        booking.put("status",    "confirmed");
-        booking.put("createdAt", new Timestamp(new Date()));
-
-        db.collection("bookings")
-                .document(user.getUid())
-                .collection("appointments")
-                .add(booking)
-                .addOnSuccessListener(ref -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+        createBooking(service, date, time, callback);
     }
 
     // ── Callbacks ─────────────────────────────────────────────────────────────
@@ -160,6 +306,16 @@ public class FirebaseManager {
 
     public interface BookingCallback {
         void onSuccess();
+        void onFailure(String error);
+    }
+
+    public interface ServicesCallback {
+        void onSuccess(List<Map<String, Object>> services);
+        void onFailure(String error);
+    }
+
+    public interface OffersCallback {
+        void onSuccess(List<Map<String, Object>> offers);
         void onFailure(String error);
     }
 }

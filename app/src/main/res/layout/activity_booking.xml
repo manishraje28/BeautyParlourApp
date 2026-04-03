@@ -1,104 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_background_pink"
+    android:background="@color/background"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/AppTitleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Book Appointment" />
-
-            <TextView
-                style="@style/AppBodyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Choose your preferred service, date and time." />
-
-            <TextView
-                style="@style/AppLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="Select Service" />
-
-            <Spinner
-                android:id="@+id/spinner_service"
+            <!-- ═══ Curved Pink Header ═══ -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_rounded"
-                android:padding="12dp" />
+                android:background="@drawable/bg_header_curved"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="40dp">
 
-            <TextView
-                style="@style/AppLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Select Date" />
+                <TextView
+                    style="@style/AppHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Book Appointment" />
 
-            <Button
-                android:id="@+id/btn_pick_date"
-                style="@style/AppPrimaryButton"
+                <TextView
+                    style="@style/AppHeaderSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Choose your preferred service, date and time" />
+            </LinearLayout>
+
+            <!-- ═══ Form Content ═══ -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:text="Choose Date" />
-
-            <TextView
-                android:id="@+id/tv_selected_date"
-                style="@style/AppBodyText"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/not_selected" />
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="20dp">
 
-            <TextView
-                style="@style/AppLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Select Time" />
+                <!-- Service Selection Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/surface_card"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp">
 
-            <Button
-                android:id="@+id/btn_pick_time"
-                style="@style/AppPrimaryButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:text="Choose Time" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-            <TextView
-                android:id="@+id/tv_selected_time"
-                style="@style/AppBodyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/not_selected" />
+                        <TextView
+                            style="@style/AppLabelText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select Service" />
 
-            <Button
-                android:id="@+id/btn_book"
-                style="@style/AppPrimaryButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:text="Book Appointment" />
+                        <View
+                            android:layout_width="40dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@color/accent_gold" />
 
+                        <Spinner
+                            android:id="@+id/spinner_service"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_spinner_rounded"
+                            android:padding="12dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Date & Time Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/surface_card"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Date Section -->
+                        <TextView
+                            style="@style/AppLabelText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select Date" />
+
+                        <View
+                            android:layout_width="40dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@color/accent_gold" />
+
+                        <Button
+                            android:id="@+id/btn_pick_date"
+                            style="@style/AppSecondaryButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="12dp"
+                            android:text="📅  Choose Date" />
+
+                        <TextView
+                            android:id="@+id/tv_selected_date"
+                            style="@style/AppBodyText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/not_selected" />
+
+                        <!-- Gold divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="16dp"
+                            android:background="@drawable/bg_gold_divider" />
+
+                        <!-- Time Section -->
+                        <TextView
+                            style="@style/AppLabelText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select Time" />
+
+                        <View
+                            android:layout_width="40dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@color/accent_gold" />
+
+                        <Button
+                            android:id="@+id/btn_pick_time"
+                            style="@style/AppSecondaryButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="12dp"
+                            android:text="🕐  Choose Time" />
+
+                        <TextView
+                            android:id="@+id/tv_selected_time"
+                            style="@style/AppBodyText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/not_selected" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Confirm Button -->
+                <Button
+                    android:id="@+id/btn_book"
+                    style="@style/AppPrimaryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:text="✨  Confirm Booking"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

@@ -1,4 +1,58 @@
 /build
+*.apk
+*.aab
 
 # Firebase config — contains API keys, never commit this
 google-services.json
+
+# Gradle
+.gradle/
+build/
+*.gradle~
+
+# Android Studio
+*.iml
+.idea/
+.gradle
+local.properties
+
+# Build outputs
+/build
+*.apk
+*.aab
+*.dex
+*.jar
+*.class
+
+# Lint
+lint-results*
+lint-baseline.xml
+
+# ===== SENSITIVE FILES - NEVER COMMIT =====
+# Firebase and Google services
+google-services.json
+serviceAccountKey.json
+firebase-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API keys and credentials
+*.key
+*.pem
+*.p8
+*.pfx
+*.p12
+secrets/
+credentials/
+
+# Private keys
+id_rsa
+id_ecdsa
+id_ed25519
+
+# Configuration with secrets
+config.local.json
+settings.local.json

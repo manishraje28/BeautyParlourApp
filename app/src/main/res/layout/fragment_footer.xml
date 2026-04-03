@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_footer"
-    android:elevation="8dp"
+    android:elevation="12dp"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingHorizontal="8dp"
-    android:paddingVertical="6dp">
+    android:paddingVertical="8dp">
 
+    <!-- Home -->
     <LinearLayout
         android:id="@+id/nav_home"
         android:layout_width="0dp"
@@ -21,22 +22,23 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:contentDescription="Home"
             android:src="@android:drawable/ic_menu_view"
-            android:tint="@color/dark_pink" />
+            android:tint="@color/primary_pink" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:text="Home"
-            android:textColor="@color/text_dark"
-            android:textSize="12sp"
+            android:textColor="@color/text_primary"
+            android:textSize="11sp"
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Services -->
     <LinearLayout
         android:id="@+id/nav_services"
         android:layout_width="0dp"
@@ -49,22 +51,22 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:contentDescription="Services"
             android:src="@android:drawable/ic_menu_agenda"
-            android:tint="@color/dark_pink" />
+            android:tint="@color/nav_unselected" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:text="Services"
-            android:textColor="@color/text_dark"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textColor="@color/nav_unselected"
+            android:textSize="11sp" />
     </LinearLayout>
 
+    <!-- Book -->
     <LinearLayout
         android:id="@+id/nav_book"
         android:layout_width="0dp"
@@ -77,22 +79,22 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:contentDescription="Book"
             android:src="@android:drawable/ic_menu_my_calendar"
-            android:tint="@color/dark_pink" />
+            android:tint="@color/nav_unselected" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:text="Book"
-            android:textColor="@color/text_dark"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textColor="@color/nav_unselected"
+            android:textSize="11sp" />
     </LinearLayout>
 
+    <!-- Profile -->
     <LinearLayout
         android:id="@+id/nav_profile"
         android:layout_width="0dp"
@@ -105,20 +107,19 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:contentDescription="Profile"
             android:src="@android:drawable/ic_menu_myplaces"
-            android:tint="@color/dark_pink" />
+            android:tint="@color/nav_unselected" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:text="Profile"
-            android:textColor="@color/text_dark"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textColor="@color/nav_unselected"
+            android:textSize="11sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,3 +1,30 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+
+# IDE cache and metadata
+*.iml
+/out/
+/.idea/
+*.swp
+*.swo
+*~
+
+# Android Studio specific
+/gradle/wrapper/gradle-wrapper.properties
+/.gradle/
+
+# Build directories
+/build
+/*/build/
+/*/*/build/
+/*/*/*/build/
+
+# Local environment
+/local.properties
+gradle.properties
+
+# Misc
+.DS_Store
+*.log
+*.iml

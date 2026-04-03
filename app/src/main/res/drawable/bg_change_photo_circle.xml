@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <gradient
         android:startColor="@color/primary_pink"
-        android:endColor="@color/accent_gold"
+        android:endColor="@color/primary_pink_dark"
         android:angle="135" />
     <size
-        android:width="100dp"
-        android:height="100dp" />
+        android:width="30dp"
+        android:height="30dp" />
 </shape>

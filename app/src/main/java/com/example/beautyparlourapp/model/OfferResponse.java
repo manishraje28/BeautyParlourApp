@@ -2,8 +2,8 @@ package com.example.beautyparlourapp.model;
 
 import java.util.List;
 
-public class ServiceResponse {
+public class OfferResponse {
     public boolean success;
-    public List<ServiceItem> data;
+    public List<OfferItem> data;
     public String error;
 }

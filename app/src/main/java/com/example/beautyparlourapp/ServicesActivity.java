@@ -6,107 +6,99 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.beautyparlourapp.model.ServiceItem;
-import com.example.beautyparlourapp.model.ServiceResponse;
-import com.example.beautyparlourapp.network.RetrofitClient;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Map;
 
 public class ServicesActivity extends AppCompatActivity {
 
-    private ProgressBar progressBar;
-    private TextView tvError;
     private LinearLayout servicesContainer;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_services);
 
-        progressBar      = findViewById(R.id.progress_bar);
-        tvError          = findViewById(R.id.tv_error);
         servicesContainer = findViewById(R.id.services_container);
+        progressBar = findViewById(R.id.pb_services);
 
         fetchServices();
         attachFooter();
     }
 
-    // ── API Call ─────────────────────────────────────────────────────────────
+    // ── Fetch services directly from Firestore ──────────────────────────────
     private void fetchServices() {
         progressBar.setVisibility(View.VISIBLE);
-        tvError.setVisibility(View.GONE);
 
-        RetrofitClient.getInstance().getApi()
-                .getServices(10)
-                .enqueue(new Callback<ServiceResponse>() {
-                    @Override
-                    public void onResponse(Call<ServiceResponse> call,
-                                           Response<ServiceResponse> response) {
-                        progressBar.setVisibility(View.GONE);
-                        if (response.isSuccessful() && response.body() != null) {
-                            displayServices(response.body().getProducts());
-                        } else {
-                            showError("Could not load services. Please try again.");
-                        }
-                    }
+        FirebaseManager.getInstance().fetchServices(new FirebaseManager.ServicesCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> services) {
+                progressBar.setVisibility(View.GONE);
+                displayServices(services);
+            }
 
-                    @Override
-                    public void onFailure(Call<ServiceResponse> call, Throwable t) {
-                        progressBar.setVisibility(View.GONE);
-                        showError("No internet connection. Please check your network.");
-                    }
-                });
+            @Override
+            public void onFailure(String error) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(ServicesActivity.this, "Error: " + error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-    private void displayServices(List<ServiceItem> services) {
+    private void displayServices(List<Map<String, Object>> services) {
         servicesContainer.removeAllViews();
-        for (ServiceItem service : services) {
-            addServiceCard(service);
+
+        // Add hint TextView
+        TextView hint = new TextView(this);
+        hint.setText("✦ Long press a service for quick details & booking");
+        hint.setTextSize(12f);
+        hint.setAlpha(0.65f);
+        hint.setPadding(0, 0, 0, dp(16));
+        servicesContainer.addView(hint);
+
+        // Add service cards
+        for (Map<String, Object> service : services) {
+            TextView card = createServiceCard(service);
+            servicesContainer.addView(card);
         }
     }
 
-    // ── Build one card per service ────────────────────────────────────────────
-    private void addServiceCard(ServiceItem service) {
+    private TextView createServiceCard(Map<String, Object> service) {
+        String name = (String) service.get("name");
+        int price = service.get("price") != null ? (int) service.get("price") : 0;
+        String description = (String) service.get("description");
+        String duration = (String) service.get("duration");
+
         TextView card = new TextView(this);
-
-        int p = dp(14);
-        card.setPadding(p, p, p, p);
-        card.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_card));
-        card.setTextColor(ContextCompat.getColor(this, R.color.text_dark));
-        card.setTextSize(14f);
-        card.setLineSpacing(dp(2), 1f);
-
-        // dummyjson prices are in USD — convert to approx INR for demo
-        String priceInr = "₹" + (int) (service.getPrice() * 83);
-        card.setText(service.getTitle() + "  —  " + priceInr + "\n" + service.getDescription());
+        card.setText(name + " - ₹" + price + "\n" + description);
+        card.setTextSize(15f);
+        card.setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
+        card.setPadding(dp(20), dp(16), dp(20), dp(16));
+        card.setClickable(true);
+        card.setFocusable(true);
+        card.setLongClickable(true);
+        card.setBackgroundResource(R.drawable.bg_card);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.topMargin = dp(10);
+        params.setMargins(0, dp(10), 0, 0);
         card.setLayoutParams(params);
 
-        card.setClickable(true);
-        card.setFocusable(true);
-        card.setLongClickable(true);
-
-        // ── Gesture 3: Long Press → Snackbar with Book Now ───────────────────
+        // Long press listener
         card.setOnLongClickListener(v -> {
-            String label = service.getTitle() + "  •  " + priceInr;
-            Snackbar.make(v, label, Snackbar.LENGTH_LONG)
+            String detail = name + "  —  ₹" + price + " · " + duration;
+            Snackbar.make(v, detail, Snackbar.LENGTH_LONG)
                     .setAction("Book Now", btn -> {
                         Intent intent = new Intent(ServicesActivity.this, BookingActivity.class);
-                        intent.putExtra("selected_service", service.getTitle());
+                        intent.putExtra("selected_service", name);
                         startActivity(intent);
                     })
                     .setActionTextColor(getResources().getColor(R.color.dark_pink, getTheme()))
@@ -114,12 +106,7 @@ public class ServicesActivity extends AppCompatActivity {
             return true;
         });
 
-        servicesContainer.addView(card);
-    }
-
-    private void showError(String message) {
-        tvError.setText(message);
-        tvError.setVisibility(View.VISIBLE);
+        return card;
     }
 
     private int dp(int value) {
