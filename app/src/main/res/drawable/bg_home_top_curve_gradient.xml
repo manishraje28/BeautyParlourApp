@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Solid background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/background" />
+        </shape>
+    </item>
+    <!-- A large soft pink/gold gradient arc from the top-left to simulate the reference image background -->
+    <item android:top="-120dp" android:left="-60dp" android:right="-60dp" android:bottom="0dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:centerX="0.2"
+                android:centerY="0.1"
+                android:gradientRadius="400dp"
+                android:startColor="#F1C2CA"
+                android:centerColor="#FAF0E3"
+                android:endColor="@color/background" />
+        </shape>
+    </item>
+</layer-list>

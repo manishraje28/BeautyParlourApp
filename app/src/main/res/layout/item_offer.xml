@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="220dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_offer_card"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginVertical="8dp"
+    android:elevation="4dp"
+    android:clipToOutline="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Default icon placeholder. Will be an elegant icon -->
+        <ImageView
+            android:id="@+id/iv_offer_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_gold_light"
+            android:padding="8dp"
+            android:src="@drawable/ic_sparkle"
+            app:tint="#8B6C4F"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_offer_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15% off"
+                android:textColor="#3A3A3A"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_offer_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hair Spa"
+                android:textColor="#3A3A3A"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_offer_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Code: RELAX15"
+        android:textColor="#4F4F4F"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_offer_valid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Valid details 13 on Mar 2023"
+        android:textColor="#808080"
+        android:textSize="11sp" />
+</LinearLayout>

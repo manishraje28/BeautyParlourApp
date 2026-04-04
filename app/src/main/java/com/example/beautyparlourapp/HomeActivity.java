@@ -70,21 +70,20 @@ public class HomeActivity extends AppCompatActivity {
             String validTill = (String) offer.get("validTill");
             int discount = offer.get("discount") != null ? (int) offer.get("discount") : 0;
 
-            android.widget.TextView offerView = new android.widget.TextView(this);
-            offerView.setText(title + "\nCode: " + code
-                    + " | " + discount + "% off | Valid till: " + validTill);
-            offerView.setTextSize(14f);
-            offerView.setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
-            offerView.setPadding(dp(20), dp(16), dp(20), dp(16));
-            offerView.setBackgroundResource(R.drawable.bg_card);
+            // Inflate our beautiful new offer card layout
+            View child = getLayoutInflater().inflate(R.layout.item_offer, offersContainer, false);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, dp(10), 0, 0);
-            offerView.setLayoutParams(params);
+            android.widget.TextView tvDiscount = child.findViewById(R.id.tv_offer_discount);
+            android.widget.TextView tvTitle = child.findViewById(R.id.tv_offer_title);
+            android.widget.TextView tvCode = child.findViewById(R.id.tv_offer_code);
+            android.widget.TextView tvValid = child.findViewById(R.id.tv_offer_valid);
 
-            offersContainer.addView(offerView);
+            tvDiscount.setText(discount + "% off");
+            tvTitle.setText(title);
+            tvCode.setText("Code: " + code);
+            tvValid.setText("Valid till " + validTill);
+
+            offersContainer.addView(child);
         }
     }
 
