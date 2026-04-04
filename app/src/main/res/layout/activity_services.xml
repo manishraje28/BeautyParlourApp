@@ -2,17 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="#FAF9F7"
     android:orientation="vertical">
-
-    <!-- ProgressBar shown while Firestore call is in progress -->
-    <ProgressBar
-        android:id="@+id/pb_services"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:visibility="visible" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,42 +21,170 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_header_curved"
+                android:background="@drawable/bg_services_header"
                 android:orientation="vertical"
                 android:paddingHorizontal="24dp"
-                android:paddingTop="32dp"
-                android:paddingBottom="40dp">
+                android:paddingTop="36dp"
+                android:paddingBottom="24dp">
 
                 <TextView
-                    style="@style/AppHeaderTitle"
+                    android:id="@+id/tv_top_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Our Services" />
+                    android:text="Curated Services List"
+                    android:textColor="@android:color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    style="@style/AppHeaderSubtitle"
+                    android:id="@+id/tv_top_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Premium treatments crafted for you" />
+                    android:text="Premium treatments crafted for you"
+                    android:textColor="#FBE5EE"
+                    android:textSize="14sp" />
             </LinearLayout>
+
+            <!-- ═══ Horizontal Categories ═══ -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="24dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Category 1 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
+                            android:background="@drawable/bg_category_circle"
+                            android:padding="20dp"
+                            android:src="@drawable/ic_category_hair" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Hair"
+                            android:textColor="#3D3D3D"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Category 2 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
+                            android:background="@drawable/bg_category_circle"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_category_skincare" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Skincare"
+                            android:textColor="#3D3D3D"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Category 3 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
+                            android:background="@drawable/bg_category_circle"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_category_makeup" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Makeup"
+                            android:textColor="#3D3D3D"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Category 4 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
+                            android:background="@drawable/bg_category_circle"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_category_spa" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Spa"
+                            android:textColor="#3D3D3D"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- ProgressBar shown while Firestore call is in progress -->
+            <ProgressBar
+                android:id="@+id/pb_services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:visibility="visible" />
 
             <!-- ═══ Content ═══ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="20dp"
+                android:paddingTop="12dp"
                 android:paddingBottom="16dp">
 
-                <TextView
-                    style="@style/AppBodyText"
-                    android:layout_width="wrap_content"
+                <!-- Service cards are added here dynamically from Firestore -->
+                <LinearLayout
+                    android:id="@+id/services_container"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:alpha="0.65"
-                    android:text="✦ Long press a service for quick details &amp; booking"
-                    android:textSize="12sp" />
+                    android:orientation="vertical" />
 
                 <!-- Shown on network error or empty response -->
                 <TextView
@@ -73,17 +192,10 @@
                     style="@style/AppBodyText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="24dp"
                     android:text=""
                     android:visibility="gone" />
-
-                <!-- Service cards are added here dynamically from Firestore -->
-                <LinearLayout
-                    android:id="@+id/services_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="vertical" />
 
             </LinearLayout>
         </LinearLayout>

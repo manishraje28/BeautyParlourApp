@@ -60,40 +60,62 @@ public class ServicesActivity extends AppCompatActivity {
         hint.setText("✦ Long press a service for quick details & booking");
         hint.setTextSize(12f);
         hint.setAlpha(0.65f);
-        hint.setPadding(0, 0, 0, dp(16));
+        hint.setPadding(dp(20), 0, 0, dp(16));
         servicesContainer.addView(hint);
 
         // Add service cards
         for (Map<String, Object> service : services) {
-            TextView card = createServiceCard(service);
+            View card = createServiceCard(service);
             servicesContainer.addView(card);
         }
     }
 
-    private TextView createServiceCard(Map<String, Object> service) {
+    private View createServiceCard(Map<String, Object> service) {
         String name = (String) service.get("name");
         int price = service.get("price") != null ? (int) service.get("price") : 0;
         String description = (String) service.get("description");
         String duration = (String) service.get("duration");
+        String category = (String) service.get("category");
 
-        TextView card = new TextView(this);
-        card.setText(name + " - ₹" + price + "\n" + description);
-        card.setTextSize(15f);
-        card.setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
-        card.setPadding(dp(20), dp(16), dp(20), dp(16));
-        card.setClickable(true);
-        card.setFocusable(true);
-        card.setLongClickable(true);
-        card.setBackgroundResource(R.drawable.bg_card);
+        // Set to default if empty
+        if (category == null || category.isEmpty()) category = "General";
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, dp(10), 0, 0);
-        card.setLayoutParams(params);
+        // Inflate the new premium service card
+        View cardView = getLayoutInflater().inflate(R.layout.item_service_card, servicesContainer, false);
+
+        android.widget.ImageView ivIcon = cardView.findViewById(R.id.iv_service_icon);
+        TextView tvTitle = cardView.findViewById(R.id.tv_title);
+        TextView tvPrice = cardView.findViewById(R.id.tv_price);
+        TextView tvDesc = cardView.findViewById(R.id.tv_desc);
+        TextView tvChip = cardView.findViewById(R.id.tv_chip);
+
+        tvTitle.setText(name);
+        tvPrice.setText("₹" + price);
+        tvDesc.setText(description);
+        tvChip.setText(category);
+
+        // Intelligently map categories to our new vector icons!
+        switch (category.toLowerCase()) {
+            case "skincare":
+            case "facial":
+                ivIcon.setImageResource(R.drawable.ic_category_skincare);
+                break;
+            case "makeup":
+            case "bridal makeup":
+                ivIcon.setImageResource(R.drawable.ic_category_makeup);
+                break;
+            case "spa":
+            case "massage":
+                ivIcon.setImageResource(R.drawable.ic_category_spa);
+                break;
+            case "hair":
+            default:
+                ivIcon.setImageResource(R.drawable.ic_category_hair);
+                break;
+        }
 
         // Long press listener
-        card.setOnLongClickListener(v -> {
+        cardView.setOnLongClickListener(v -> {
             String detail = name + "  —  ₹" + price + " · " + duration;
             Snackbar.make(v, detail, Snackbar.LENGTH_LONG)
                     .setAction("Book Now", btn -> {
@@ -106,7 +128,7 @@ public class ServicesActivity extends AppCompatActivity {
             return true;
         });
 
-        return card;
+        return cardView;
     }
 
     private int dp(int value) {
