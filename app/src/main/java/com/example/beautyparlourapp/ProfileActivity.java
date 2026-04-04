@@ -95,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // ── Change Photo (✎ pencil button) ───────────────────────────────────────
     private void setupChangePhotoButton() {
-        TextView btnChangePhoto = findViewById(R.id.btn_change_photo);
+        ImageView btnChangePhoto = findViewById(R.id.btn_change_photo);
         btnChangePhoto.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
     }
 

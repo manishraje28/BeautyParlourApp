@@ -39,9 +39,9 @@
                         android:layout_marginTop="24dp"
                         android:fontFamily="serif"
                         android:text="Bharati's"
-                        android:textColor="#3A2A28"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
+                        android:textColor="#A07941"
+                        android:textSize="38sp"
+                        android:textStyle="normal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,9 +52,9 @@
                         android:layout_marginStart="24dp"
                         android:fontFamily="serif"
                         android:text="Beauty Parlour"
-                        android:textColor="#3A2A28"
+                        android:textColor="#A07941"
                         android:textSize="32sp"
-                        android:textStyle="bold"
+                        android:textStyle="normal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_bh" />
 
@@ -65,8 +65,8 @@
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="4dp"
                         android:text="Where Elegance Meets Care"
-                        android:textColor="#5A4744"
-                        android:textSize="14sp"
+                        android:textColor="#7A5E35"
+                        android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_bp" />
 

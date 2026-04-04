@@ -29,7 +29,14 @@ public class BookingActivity extends AppCompatActivity {
         setupServiceSpinner();
         setupDateAndTimePickers();
         setupBookingButton();
+        
         attachFooter();
+        
+        // Make the back button in the header functional
+        android.view.View backButton = findViewById(R.id.ll_top_bar);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> onBackPressed());
+        }
     }
 
     private void setupServiceSpinner() {

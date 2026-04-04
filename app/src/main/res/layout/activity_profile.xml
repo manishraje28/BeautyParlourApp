@@ -1,66 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical">
+    android:background="#FAF9F7">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:fillViewport="true"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/footer_container">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <!-- ═══ Curved Pink Header ═══ -->
-            <LinearLayout
+            <!-- ═══ Curved Pink/Gold Header ═══ -->
+            <View
+                android:id="@+id/v_header_bg"
                 android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@drawable/bg_profile_header"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_header_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_header_curved"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="32dp"
-                android:paddingBottom="36dp">
+                android:layout_marginTop="40dp"
+                android:text="My Profile"
+                android:textColor="#A07941"
+                android:textSize="32sp"
+                android:textStyle="normal"
+                android:fontFamily="serif"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                <TextView
-                    style="@style/AppHeaderTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Profile" />
+            <TextView
+                android:id="@+id/tv_header_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Your beauty journey"
+                android:textColor="#7A5E35"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/tv_header_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                <TextView
-                    style="@style/AppHeaderSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Your beauty journey" />
-            </LinearLayout>
 
             <!-- ═══ Profile Content ═══ -->
+            
+            <!-- ── Logged Out State ── -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layout_logged_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="20dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="6dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_header_subtitle"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="28dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center_horizontal"
+                        android:contentDescription="Not logged in"
+                        android:src="@drawable/ic_scissors"
+                        app:tint="#A07941" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="You are not logged in"
+                        android:textColor="#4A3E26"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:textColor="#8C6239"
+                        android:text="Sign in to access your profile and bookings" />
+
+                    <Button
+                        android:id="@+id/btn_go_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:paddingVertical="12dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_logout_btn_gradient"
+                        app:backgroundTint="@null"
+                        android:textColor="#7A5E35"
+                        android:text="Login" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── Logged In State ── -->
             <LinearLayout
+                android:id="@+id/layout_logged_in"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="16dp">
+                app:layout_constraintTop_toBottomOf="@id/tv_header_subtitle"
+                android:layout_marginTop="24dp"
+                android:visibility="visible">
 
-                <!-- ── Logged Out State ── -->
+                <!-- Avatar Card -->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/layout_logged_out"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:cardBackgroundColor="@color/surface_card"
+                    android:layout_marginHorizontal="20dp"
+                    app:cardBackgroundColor="#FFFFFF"
                     app:cardCornerRadius="24dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -69,164 +139,148 @@
                         android:orientation="vertical"
                         android:padding="28dp">
 
-                        <!-- Empty state icon -->
-                        <ImageView
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_gravity="center_horizontal"
-                            android:contentDescription="Not logged in"
-                            android:src="@drawable/ic_scissors"
-                            android:tint="@color/primary_pink" />
+                        <FrameLayout
+                            android:layout_width="120dp"
+                            android:layout_height="120dp">
+
+                            <!-- Avatar -->
+                            <ImageView
+                                android:id="@+id/img_avatar"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/bg_profile_placeholder"
+                                android:scaleType="centerCrop" />
+
+                            <!-- Outer gold ring -->
+                            <View
+                                android:layout_width="112dp"
+                                android:layout_height="112dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/bg_avatar_ring_premium" />
+
+                            <!-- Tap to pick a new photo from gallery -->
+                            <ImageView
+                                android:id="@+id/btn_change_photo"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="bottom|end"
+                                android:layout_marginEnd="6dp"
+                                android:layout_marginBottom="6dp"
+                                android:background="@drawable/bg_edit_circle"
+                                android:padding="6dp"
+                                android:src="@drawable/ic_pencil_gold"
+                                android:clickable="true"
+                                android:focusable="true"/>
+                        </FrameLayout>
 
                         <TextView
-                            style="@style/AppSectionTitle"
+                            android:id="@+id/tv_profile_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:gravity="center"
-                            android:text="You are not logged in" />
+                            android:text="manish"
+                            android:textColor="#594627"
+                            android:fontFamily="serif"
+                            android:textSize="26sp" />
 
                         <TextView
-                            style="@style/AppBodyText"
+                            android:id="@+id/tv_profile_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="Sign in to access your profile and bookings" />
+                            android:layout_marginTop="4dp"
+                            android:text="manishbraje@gmail.com"
+                            android:textColor="#8C6239"
+                            android:textSize="15sp" />
+
+                        <!-- Gold divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="24dp"
+                            android:background="#E5D1B8" />
 
                         <Button
-                            android:id="@+id/btn_go_login"
-                            style="@style/AppPrimaryButton"
+                            android:id="@+id/btn_logout"
                             android:layout_width="match_parent"
-                            android:layout_height="64dp"
-                            android:paddingVertical="12dp"
-                            android:layout_marginTop="20dp"
-                            android:text="Login" />
+                            android:layout_height="54dp"
+                            android:layout_marginTop="24dp"
+                            android:background="@drawable/bg_logout_btn_gradient"
+                            app:backgroundTint="@null"
+                            android:textAllCaps="false"
+                            android:fontFamily="serif"
+                            android:textSize="20sp"
+                            android:textColor="#8C6239"
+                            android:text="Logout" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- ── Logged In State ── -->
-                <LinearLayout
-                    android:id="@+id/layout_logged_in"
+                <!-- View Bookings Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_view_bookings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="30dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="6dp">
 
-                    <!-- Avatar Card -->
-                    <androidx.cardview.widget.CardView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="24dp"
-                        app:cardElevation="4dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/ic_calendar_decor" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1"
                             android:orientation="vertical"
-                            android:padding="28dp">
-
-                            <!-- Avatar with gold ring and edit button -->
-                            <FrameLayout
-                                android:layout_width="108dp"
-                                android:layout_height="108dp">
-
-                                <!-- Gold ring -->
-                                <View
-                                    android:layout_width="108dp"
-                                    android:layout_height="108dp"
-                                    android:background="@drawable/bg_avatar_ring" />
-
-                                <!-- Gesture 5: Pinch Zoom target -->
-                                <ImageView
-                                    android:id="@+id/img_avatar"
-                                    android:layout_width="96dp"
-                                    android:layout_height="96dp"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/bg_profile_placeholder"
-                                    android:scaleType="centerCrop" />
-
-                                <!-- Tap to pick a new photo from gallery -->
-                                <TextView
-                                    android:id="@+id/btn_change_photo"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_gravity="bottom|end"
-                                    android:background="@drawable/bg_change_photo_circle"
-                                    android:clickable="true"
-                                    android:focusable="true"
-                                    android:gravity="center"
-                                    android:text="&#10000;"
-                                    android:textColor="@color/white"
-                                    android:textSize="13sp" />
-                            </FrameLayout>
+                            android:layout_marginStart="16dp">
 
                             <TextView
-                                android:id="@+id/tv_profile_name"
-                                style="@style/AppSectionTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                android:text="Name" />
+                                android:text="View Bookings"
+                                android:textColor="#594627"
+                                android:fontFamily="serif"
+                                android:textSize="22sp" />
 
                             <TextView
-                                android:id="@+id/tv_profile_email"
-                                style="@style/AppBodyText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="email@example.com" />
-
-                            <!-- Gold divider -->
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginTop="20dp"
-                                android:background="@drawable/bg_gold_divider" />
-
-                            <Button
-                                android:id="@+id/btn_logout"
-                                style="@style/AppPrimaryButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="60dp"
-                                android:paddingVertical="10dp"
-                                android:layout_marginTop="20dp"
-                                android:text="Logout" />
-
-                            <!-- <Button
-                                android:id="@+id/btn_view_users"
-                                style="@style/AppSecondaryButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="60dp"
-                                android:paddingVertical="10dp"
-                                android:layout_marginTop="12dp"
-                                android:text="View All Users" /> -->
+                                android:layout_marginTop="2dp"
+                                android:text="Your Upcoming Appointments"
+                                android:textColor="#8C6239"
+                                android:textSize="14sp" />
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
 
-                <!-- Gesture 4: Swipe Left/Right hint -->
-                <TextView
-                    style="@style/AppBodyText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="28dp"
-                    android:alpha="0.45"
-                    android:gravity="center"
-                    android:text="← Swipe left to Book  |  Swipe right for Home →"
-                    android:textSize="12sp" />
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_arrow_right_gold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <FrameLayout
         android:id="@+id/footer_container"
         android:layout_width="match_parent"
-        android:layout_height="72dp" />
+        android:layout_height="72dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
