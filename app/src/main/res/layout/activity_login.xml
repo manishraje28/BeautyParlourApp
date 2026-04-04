@@ -103,7 +103,8 @@
                     android:id="@+id/btn_login"
                     style="@style/AppPrimaryButton"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
+                    android:layout_height="64dp"
+                    android:paddingVertical="12dp"
                     android:layout_marginTop="22dp"
                     android:text="Login" />
 

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Header Styles -->
+    <style name="AppHeaderTitle" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppHeaderSubtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Section Title -->
+    <style name="AppSectionTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Body Text -->
+    <style name="AppBodyText" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Label Text -->
+    <style name="AppLabelText" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Chip Style -->
+    <style name="AppChipStyle">
+        <item name="android:textColor">@color/accent_gold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <!-- Gold Price Style -->
+    <style name="AppGoldPrice">
+        <item name="android:textColor">@color/accent_gold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Primary Button -->
+    <style name="AppPrimaryButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/bg_button_rounded</item>
+    </style>
+
+    <!-- Secondary Button -->
+    <style name="AppSecondaryButton">
+        <item name="android:textColor">@color/primary_pink</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@drawable/bg_button_outlined</item>
+    </style>
+
+    <!-- Input Field -->
+    <style name="AppInputField">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:background">@drawable/bg_spinner_rounded</item>
+    </style>
+
+    <!-- Link Text -->
+    <style name="AppLinkText">
+        <item name="android:textColor">@color/primary_pink</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

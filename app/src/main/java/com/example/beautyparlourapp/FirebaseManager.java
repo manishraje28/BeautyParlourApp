@@ -3,6 +3,7 @@ package com.example.beautyparlourapp;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.beautyparlourapp.model.User;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -174,6 +175,27 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    // ── Fetch all users ───────────────────────────────────────────────────────
+    public void fetchUsers(UsersCallback callback) {
+        db.collection("users").get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<User> users = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        User user = new User(
+                                doc.getId(),
+                                doc.getString("name"),
+                                doc.getString("email"),
+                                doc.getString("phone"),
+                                doc.getString("avatarUrl"),
+                                doc.getString("joinedDate")
+                        );
+                        users.add(user);
+                    }
+                    callback.onSuccess(users);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     // ══════════════════════════════════════════════════════════════════════════
     // CREATE BOOKING (direct Firestore — top-level bookings collection)
     // ══════════════════════════════════════════════════════════════════════════
@@ -316,6 +338,11 @@ public class FirebaseManager {
 
     public interface OffersCallback {
         void onSuccess(List<Map<String, Object>> offers);
+        void onFailure(String error);
+    }
+
+    public interface UsersCallback {
+        void onSuccess(List<User> users);
         void onFailure(String error);
     }
 }

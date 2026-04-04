@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary Colors -->
+    <color name="primary_pink">#E91E63</color>
+    <color name="primary_pink_dark">#C2185B</color>
+    <color name="dark_pink">#C2185B</color>
+    <color name="accent_gold">#FFB800</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#2C2C2C</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_tertiary">#BDBDBD</color>
+
+    <!-- Background Colors -->
+    <color name="background">#FAFAFA</color>
+    <color name="surface_card">#FFFFFF</color>
+
+    <!-- Navigation Colors -->
+    <color name="nav_unselected">#9E9E9E</color>
+    <color name="nav_selected_bg">#FFC0CB</color>
+    <color name="status_bar">#E91E63</color>
+
+    <!-- Card & Border Colors -->
+    <color name="card_border_faint">#E0E0E0</color>
+
+    <!-- Header Gradient -->
+    <color name="header_gradient_start">#E91E63</color>
+    <color name="header_gradient_end">#F06292</color>
+
+    <!-- Offer Card -->
+    <color name="offer_bg">#FCE4EC</color>
+
+    <!-- Divider & Input -->
+    <color name="divider_gold">#FFE082</color>
+    <color name="input_stroke_idle">#BDBDBD</color>
+
+    <!-- Badge -->
+    <color name="badge_pink_bg">#F48FB1</color>
+
+    <!-- System Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
 </resources>
