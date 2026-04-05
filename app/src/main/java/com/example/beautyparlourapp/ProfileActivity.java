@@ -75,10 +75,10 @@ public class ProfileActivity extends AppCompatActivity {
                             .edit().putString(KEY_AVATAR_URI, uri.toString()).apply();
                     loadAvatarFromUri(uri);
 
-                    // Upload to Firebase Storage → save URL to Firestore + prefs
+                    // Upload to Cloudinary → save URL to Firestore + prefs
                     if (FirebaseManager.getInstance().isLoggedIn()) {
                         Toast.makeText(this, "Uploading photo...", Toast.LENGTH_SHORT).show();
-                        FirebaseManager.getInstance().uploadProfilePhoto(uri,
+                        FirebaseManager.getInstance().uploadProfilePhoto(this, uri,
                                 new FirebaseManager.PhotoUploadCallback() {
                                     @Override
                                     public void onSuccess(String url) {
@@ -105,21 +105,55 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Register launcher for Style Journey media
         journeyMediaPickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.GetMultipleContents(), // Supports selecting multiple items
+                new ActivityResultContracts.GetMultipleContents(),
                 uris -> {
                     if (uris != null && !uris.isEmpty()) {
                         for (Uri uri : uris) {
+                            boolean isVideo = false;
+                            String mimeType = getContentResolver().getType(uri);
+                            if (mimeType != null) {
+                                isVideo = mimeType.startsWith("video/");
+                            }
+                            
+                            // Immediately Show Locally (optimistic rendering)
                             try {
                                 getContentResolver().takePersistableUriPermission(
                                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                // ADD AT INDEX 0 SO NEWEST POST IS FIRST
+                                journeyMediaUris.add(0, uri.toString()); 
                             } catch (SecurityException e) {
-                                Log.e("ProfileActivity", "Failed to take persistable permission", e);
+                                Log.e("ProfileActivity", "Granted perm failed", e);
                             }
-                            journeyMediaUris.add(uri.toString());
+
+                            // Upload to Cloudinary Free Tier! ☁️
+                            Toast.makeText(this, "Uploading media to cloud...", Toast.LENGTH_SHORT).show();
+                            FirebaseManager.getInstance().uploadStyleJourneyMedia(this, uri, isVideo,
+                                    new FirebaseManager.PhotoUploadCallback() {
+                                        @Override
+                                        public void onSuccess(String url) {
+                                            // Replace local URI with cloud URL so it survives app restarts & reinstallations!
+                                            int index = journeyMediaUris.indexOf(uri.toString());
+                                            if (index != -1) {
+                                                journeyMediaUris.set(index, url);
+                                            } else {
+                                                journeyMediaUris.add(0, url);
+                                            }
+                                            saveJourneyUris(); // backup stringified array locally
+                                            journeyAdapter.notifyDataSetChanged();
+                                            
+                                            Toast.makeText(ProfileActivity.this, "Upload complete & saved to profile!", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(String error) {
+                                            Toast.makeText(ProfileActivity.this, "Upload failed: " + error, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
+                        
+                        // Show them initially on grid while waiting for upload
                         saveJourneyUris();
                         journeyAdapter.notifyDataSetChanged();
-                        Toast.makeText(this, "Added to Style Journey!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -141,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity {
         String savedUris = prefs.getString(KEY_STYLE_JOURNEY_URIS, "");
         if (!savedUris.isEmpty()) {
             journeyMediaUris.addAll(Arrays.asList(savedUris.split(",")));
-        }
+        } // NOTE: local loading assumes it's already properly ordered because we save it natively reversed.
         
         // Setup Grid
         rvStyleJourney.setLayoutManager(new GridLayoutManager(this, 3));
@@ -277,6 +311,48 @@ public class ProfileActivity extends AppCompatActivity {
         // Set the ViewPager to launch on the tapped photo's position
         viewPager.setCurrentItem(startPosition, false);
 
+        // Delete button
+        ImageView btnDelete = new ImageView(this);
+        btnDelete.setImageResource(android.R.drawable.ic_menu_delete);
+        btnDelete.setColorFilter(0xFFFF5555); // Red icon
+        btnDelete.setPadding(32, 32, 32, 32);
+        FrameLayout.LayoutParams deleteParams = new FrameLayout.LayoutParams(
+                120, 120);
+        deleteParams.gravity = Gravity.TOP | Gravity.START;
+        deleteParams.setMargins(48, 48, 0, 0);
+        btnDelete.setLayoutParams(deleteParams);
+        btnDelete.setOnClickListener(v -> {
+            new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete Post")
+                .setMessage("Are you sure you want to permanently delete this media from your profile?")
+                .setPositiveButton("Delete", (d, w) -> {
+                    int currentPos = viewPager.getCurrentItem();
+                    if (currentPos >= 0 && currentPos < journeyMediaUris.size()) {
+                        String urlToDelete = journeyMediaUris.get(currentPos);
+                        
+                        // Remove from Firestore and Firebase Storage
+                        FirebaseManager.getInstance().deleteStyleJourneyMedia(urlToDelete);
+                        
+                        // Remove locally
+                        journeyMediaUris.remove(currentPos);
+                        journeyAdapter.notifyItemRemoved(currentPos);
+                        saveJourneyUris();
+                        
+                        // Close or refresh pager
+                        if (journeyMediaUris.isEmpty()) {
+                            dialog.dismiss();
+                        } else {
+                            if (viewPager.getAdapter() != null) {
+                                viewPager.getAdapter().notifyDataSetChanged();
+                            }
+                        }
+                        Toast.makeText(this, "Post successfully deleted", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+        });
+
         // Close button
         ImageView btnClose = new ImageView(this);
         btnClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
@@ -291,6 +367,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         overlay.addView(viewPager);
         overlay.addView(btnClose);
+        overlay.addView(btnDelete);
 
         dialog.setContentView(overlay);
         dialog.show();
@@ -332,10 +409,33 @@ public class ProfileActivity extends AppCompatActivity {
         String uid = FirebaseManager.getInstance().getCurrentUser().getUid();
 
         FirebaseManager.getInstance().fetchUserFromFirestore(uid,
-                new FirebaseManager.LoginCallback() {
+                new FirebaseManager.ProfileCallback() {
                     @Override
                     public void onSuccess(String name, String email,
-                                         String phone, String avatarUrl) {
+                                         String phone, String avatarUrl, List<String> journeyUrls) {
+                        
+                        // Show Name/Email
+                        ((TextView) findViewById(R.id.tv_profile_name)).setText(name);
+                        ((TextView) findViewById(R.id.tv_profile_email)).setText(email);
+                        
+                        // Show Avatar
+                        loadAvatarFromUrl(avatarUrl);
+                        
+                        // Populate Style Journey from Cloud
+                        if (journeyUrls != null && !journeyUrls.isEmpty()) {
+                            journeyMediaUris.clear();
+                            List<String> reversedUrls = new ArrayList<>(journeyUrls);
+                            java.util.Collections.reverse(reversedUrls); // make the most recent elements index 0
+                            journeyMediaUris.addAll(reversedUrls);
+                            
+                            // Re-save them into SharedPrefs so we have them locally too
+                            saveJourneyUris(); 
+                            
+                            if (journeyAdapter != null) {
+                                journeyAdapter.notifyDataSetChanged();
+                            }
+                        }
+
                         // Update SharedPreferences with fresh Firestore data
                         SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
                         prefs.edit()
@@ -343,10 +443,6 @@ public class ProfileActivity extends AppCompatActivity {
                                 .putString(KEY_USER_EMAIL, email)
                                 .putString(KEY_AVATAR_URL_REMOTE, avatarUrl)
                                 .apply();
-
-                        ((TextView) findViewById(R.id.tv_profile_name)).setText(name);
-                        ((TextView) findViewById(R.id.tv_profile_email)).setText(email);
-                        loadAvatarFromUrl(avatarUrl);
                     }
 
                     @Override

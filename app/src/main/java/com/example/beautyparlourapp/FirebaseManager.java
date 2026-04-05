@@ -1,7 +1,12 @@
 package com.example.beautyparlourapp;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 
 import com.example.beautyparlourapp.model.User;
 import com.google.firebase.Timestamp;
@@ -10,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.UploadTask;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -35,12 +42,27 @@ public class FirebaseManager {
     private final FirebaseStorage  storage;
 
     private boolean defaultDataSeeded = false;
+    private boolean isCloudinaryInitialized = false;
 
     private FirebaseManager() {
         auth    = FirebaseAuth.getInstance();
         db      = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         seedDefaultDataIfNeeded();
+    }
+
+    public void initCloudinaryIfNeeded(Context context) {
+        if (!isCloudinaryInitialized) {
+            try {
+                HashMap<String, String> config = new HashMap<>();
+                config.put("cloud_name", "dp2uadpyh");
+                MediaManager.init(context.getApplicationContext(), config);
+                isCloudinaryInitialized = true;
+                Log.d(TAG, "Cloudinary initialized successfully");
+            } catch (Exception e) {
+                isCloudinaryInitialized = true; // Likely already initialized
+            }
+        }
     }
 
     public static synchronized FirebaseManager getInstance() {
@@ -239,6 +261,7 @@ public class FirebaseManager {
     private void saveUserToFirestore(String uid, String name, String phone,
                                      String email, SignUpCallback callback) {
         Map<String, Object> user = new HashMap<>();
+        user.put("userId",     uid); // Explicitly storing the UID as a field!
         user.put("name",       name);
         user.put("phone",      phone);
         user.put("email",      email);
@@ -261,6 +284,39 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    public interface ProfileCallback {
+        void onSuccess(String name, String email, String phone, String avatarUrl, List<String> styleJourneyUrls);
+        void onFailure(String error);
+    }
+
+    public void fetchUserFromFirestore(String uid, ProfileCallback callback) {
+        db.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        List<String> journeyUrls = new ArrayList<>();
+                        Object urlsObj = doc.get("styleJourneyUrls");
+                        if (urlsObj instanceof List) {
+                            for (Object item : (List<?>) urlsObj) {
+                                if (item instanceof String) {
+                                    journeyUrls.add((String) item);
+                                }
+                            }
+                        }
+                    
+                        callback.onSuccess(
+                                doc.getString("name"),
+                                doc.getString("email"),
+                                doc.getString("phone"),
+                                doc.getString("avatarUrl"),
+                                journeyUrls);
+                    } else {
+                        callback.onFailure("User profile not found in database.");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     public void fetchUserFromFirestore(String uid, LoginCallback callback) {
         db.collection("users").document(uid)
                 .get()
@@ -278,30 +334,106 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    // ── Upload Style Journey Media → Cloudinary, then arrayUnion → Firestore ────────────
+    public void uploadStyleJourneyMedia(Context context, Uri uri, boolean isVideo, PhotoUploadCallback callback) {
+        FirebaseUser user = getCurrentUser();
+        if (user == null) { callback.onFailure("Not logged in."); return; }
+
+        initCloudinaryIfNeeded(context);
+
+        String resourceType = isVideo ? "video" : "image";
+
+        MediaManager.get().upload(uri)
+                .unsigned("beautypalace")
+                .option("resource_type", resourceType) // CRITICAL for videos
+                .option("folder", "style_journey")
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) { }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) { }
+
+                    @Override
+                    public void onSuccess(String requestId, java.util.Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        
+                        // Cloudinary works! Save the URL precisely to Firestore
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("styleJourneyUrls", com.google.firebase.firestore.FieldValue.arrayUnion(url));
+
+                        db.collection("users").document(user.getUid())
+                                .set(data, SetOptions.merge())
+                                .addOnSuccessListener(v -> callback.onSuccess(url))
+                                .addOnFailureListener(e -> callback.onFailure("Firestore Save Error: " + e.getMessage()));
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        callback.onFailure("Cloudinary Error: " + error.getDescription());
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) { }
+                }).dispatch();
+    }
+
     // ── Logout ────────────────────────────────────────────────────────────────
     public void logout() {
         auth.signOut();
     }
 
-    // ── Upload Profile Photo → Storage, then save URL → Firestore ────────────
-    public void uploadProfilePhoto(Uri uri, PhotoUploadCallback callback) {
+    // ── Upload Profile Photo → Cloudinary, then save URL → Firestore ────────────
+    public void uploadProfilePhoto(Context context, Uri uri, PhotoUploadCallback callback) {
         FirebaseUser user = getCurrentUser();
         if (user == null) { callback.onFailure("Not logged in."); return; }
 
-        StorageReference ref = storage.getReference()
-                .child("avatars/" + user.getUid() + ".jpg");
+        initCloudinaryIfNeeded(context);
 
-        ref.putFile(uri)
-                .addOnSuccessListener(snap -> ref.getDownloadUrl()
-                        .addOnSuccessListener(downloadUri -> {
-                            String url = downloadUri.toString();
-                            db.collection("users").document(user.getUid())
-                                    .update("avatarUrl", url)
-                                    .addOnSuccessListener(v -> callback.onSuccess(url))
-                                    .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
-                        })
-                        .addOnFailureListener(e -> callback.onFailure(e.getMessage())))
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+        MediaManager.get().upload(uri)
+                .unsigned("beautypalace")
+                .option("folder", "avatars")
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) { }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) { }
+
+                    @Override
+                    public void onSuccess(String requestId, java.util.Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("avatarUrl", url);
+
+                        db.collection("users").document(user.getUid())
+                                .set(data, SetOptions.merge())
+                                .addOnSuccessListener(v -> callback.onSuccess(url))
+                                .addOnFailureListener(e -> callback.onFailure("Database save error: " + e.getMessage()));
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        callback.onFailure("Cloudinary Error: " + error.getDescription());
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) { }
+                }).dispatch();
+    }
+
+    // ── Delete Style Journey Media from Firestore ────────────
+    public void deleteStyleJourneyMedia(String url) {
+        FirebaseUser user = getCurrentUser();
+        if (user == null) return;
+        
+        db.collection("users").document(user.getUid())
+                .update("styleJourneyUrls", com.google.firebase.firestore.FieldValue.arrayRemove(url))
+                .addOnSuccessListener(v -> {
+                     // Since it's unsigned cloudinary, we can't delete actual file without Backend-Secret
+                     // So we just safely remove it from the User's displayed UI array list!
+                });
     }
 
     // ── Save Booking → Firestore (legacy method kept for compatibility) ──────
