@@ -150,9 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
         
         // Setup Add Button
         btnAddMedia.setOnClickListener(v -> {
-            journeyMediaPickerLauncher.launch("image/*");
-            // To allow videos too, you could use "*/*" and filter mime types,
-            // but "image/*" fits the profile mockup nicely for now.
+            journeyMediaPickerLauncher.launch("*/*"); // image and video support
         });
     }
 
@@ -186,13 +184,16 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String uriString = mediaUris.get(position);
+            Uri uri = Uri.parse(uriString);
+            
+            // Glide handles local video URIs by grabbing the first frame automatically
             Glide.with(ProfileActivity.this)
-                    .load(Uri.parse(uriString))
+                    .load(uri)
                     .centerCrop()
                     .into(holder.imgStyle);
             
-            // Optional: Launch full screen on click
-            holder.itemView.setOnClickListener(v -> showGridImageFullScreen(Uri.parse(uriString)));
+            // Optional: Launch full screen slider on click
+            holder.itemView.setOnClickListener(v -> showGridMediaFullScreen(position));
         }
 
         @Override
@@ -209,20 +210,72 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void showGridImageFullScreen(Uri imageUri) {
+    private void showGridMediaFullScreen(int startPosition) {
         Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         dialog.setCanceledOnTouchOutside(true);
 
         FrameLayout overlay = new FrameLayout(this);
         overlay.setBackgroundColor(0xEE000000); // 93% black background
 
-        ImageView fullImg = new ImageView(this);
-        fullImg.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        fullImg.setLayoutParams(new FrameLayout.LayoutParams(
+        androidx.viewpager2.widget.ViewPager2 viewPager = new androidx.viewpager2.widget.ViewPager2(this);
+        viewPager.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        Glide.with(this).load(imageUri).into(fullImg);
+        viewPager.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                FrameLayout container = new FrameLayout(parent.getContext());
+                container.setLayoutParams(new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                return new RecyclerView.ViewHolder(container) {};
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                FrameLayout container = (FrameLayout) holder.itemView;
+                container.removeAllViews();
+                
+                Uri mediaUri = Uri.parse(journeyMediaUris.get(position));
+                String mimeType = getContentResolver().getType(mediaUri);
+                boolean isVideo = mimeType != null && mimeType.startsWith("video/");
+                
+                if (isVideo) {
+                    android.widget.VideoView videoView = new android.widget.VideoView(container.getContext());
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+                    params.gravity = Gravity.CENTER;
+                    videoView.setLayoutParams(params);
+                    videoView.setVideoURI(mediaUri);
+                    
+                    android.widget.MediaController mediaController = new android.widget.MediaController(container.getContext());
+                    mediaController.setAnchorView(videoView);
+                    videoView.setMediaController(mediaController);
+                    
+                    container.addView(videoView);
+                    videoView.start();
+                } else {
+                    ImageView imageView = new ImageView(container.getContext());
+                    imageView.setLayoutParams(new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    Glide.with(container.getContext()).load(mediaUri).into(imageView);
+                    container.addView(imageView);
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return journeyMediaUris.size();
+            }
+        });
+
+        // Set the ViewPager to launch on the tapped photo's position
+        viewPager.setCurrentItem(startPosition, false);
 
         // Close button
         ImageView btnClose = new ImageView(this);
@@ -236,7 +289,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnClose.setLayoutParams(closeParams);
         btnClose.setOnClickListener(v -> dialog.dismiss());
 
-        overlay.addView(fullImg);
+        overlay.addView(viewPager);
         overlay.addView(btnClose);
 
         dialog.setContentView(overlay);
