@@ -25,6 +25,9 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".ViewBookingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity

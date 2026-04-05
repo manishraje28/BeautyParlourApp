@@ -247,6 +247,43 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    public interface FetchBookingsCallback {
+        void onSuccess(List<com.example.beautyparlourapp.models.Booking> bookings);
+        void onFailure(String error);
+    }
+
+    public void fetchUserBookings(FetchBookingsCallback callback) {
+        if (!isLoggedIn()) {
+            callback.onFailure("User not logged in");
+            return;
+        }
+        String uid = getCurrentUser().getUid();
+        
+        db.collection("bookings")
+                .whereEqualTo("userId", uid)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<com.example.beautyparlourapp.models.Booking> bookings = new ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        String service = doc.getString("service");
+                        String date = doc.getString("date");
+                        String time = doc.getString("time");
+                        String status = doc.getString("status");
+                        
+                        // Combine date and time
+                        String datetime = (date != null ? date : "") + " at " + (time != null ? time : "");
+                        
+                        bookings.add(new com.example.beautyparlourapp.models.Booking(
+                            service != null ? service : "Unknown Service",
+                            datetime,
+                            status != null ? status : "Confirmed"
+                        ));
+                    }
+                    callback.onSuccess(bookings);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     // ── Sign Up ───────────────────────────────────────────────────────────────
     public void signUp(String name, String phone, String email,
                        String password, SignUpCallback callback) {

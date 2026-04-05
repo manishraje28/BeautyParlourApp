@@ -162,7 +162,18 @@ public class ProfileActivity extends AppCompatActivity {
         setupAvatarInteraction();  // Gesture 5 – tap = full-screen popup
         setupSwipeNavigation();    // Gesture 4 – swipe left/right
         setupStyleJourneyGrid();
+        setupViewBookingsButton();
         attachFooter();
+    }
+
+    private void setupViewBookingsButton() {
+        View btnViewBookings = findViewById(R.id.btn_view_bookings);
+        if (btnViewBookings != null) {
+            btnViewBookings.setOnClickListener(v -> {
+                Intent intent = new Intent(this, ViewBookingsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     // ── Style Journey Setup ───────────────────────────────────────────────────
