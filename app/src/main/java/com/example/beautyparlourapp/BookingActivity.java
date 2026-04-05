@@ -1,7 +1,13 @@
 package com.example.beautyparlourapp;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -9,7 +15,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.Calendar;
@@ -21,10 +30,20 @@ public class BookingActivity extends AppCompatActivity {
     private TextView selectedDateText;
     private TextView selectedTimeText;
 
+    // Launcher for POST_NOTIFICATIONS
+    private final ActivityResultLauncher<String> requestNotificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {});
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
 
         setupServiceSpinner();
         setupDateAndTimePickers();
@@ -116,6 +135,9 @@ public class BookingActivity extends AppCompatActivity {
                             Toast.makeText(BookingActivity.this,
                                     "✓ Booking confirmed for " + service,
                                     Toast.LENGTH_LONG).show();
+                            
+                            // Schedule local notification 2 hours prior to this appointment
+                            scheduleReminder(service, time);
                         }
 
                         @Override
@@ -127,6 +149,40 @@ public class BookingActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    private void scheduleReminder(String service, String timeStr) {
+        // Clone calendar which holds the user-picked Date & Time exactly!
+        Calendar reminderTime = (Calendar) calendar.clone();
+
+        // Let's subtract 2 hours from the appointment time
+        reminderTime.add(Calendar.HOUR_OF_DAY, -2);
+
+        // Make sure the reminder isn't in the past
+        if (reminderTime.getTimeInMillis() <= System.currentTimeMillis()) {
+            return;
+        }
+
+        Intent intent = new Intent(this, AppointmentReminderReceiver.class);
+        intent.putExtra("service_name", service);
+        intent.putExtra("appointment_time", timeStr);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                (int) System.currentTimeMillis(), // unique ID for every booking 
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            // Depending on OEM, USE_EXACT_ALARM takes care of API 33+ exact alarm constraints
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
+            }
+        }
     }
 
     private void attachFooter() {
