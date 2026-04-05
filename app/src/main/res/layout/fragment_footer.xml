@@ -22,20 +22,21 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:id="@+id/iv_nav_home"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Home"
-            android:src="@android:drawable/ic_menu_view"
-            android:tint="@color/primary_pink" />
+            android:src="@drawable/ic_nav_home"
+            android:tint="@color/nav_unselected" />
 
         <TextView
+            android:id="@+id/tv_nav_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Home"
-            android:textColor="@color/text_primary"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textColor="@color/nav_unselected"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- Services -->
@@ -51,19 +52,21 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:id="@+id/iv_nav_services"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Services"
-            android:src="@android:drawable/ic_menu_agenda"
+            android:src="@drawable/ic_nav_services"
             android:tint="@color/nav_unselected" />
 
         <TextView
+            android:id="@+id/tv_nav_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Services"
             android:textColor="@color/nav_unselected"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- Book -->
@@ -79,19 +82,21 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:id="@+id/iv_nav_book"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Book"
-            android:src="@android:drawable/ic_menu_my_calendar"
+            android:src="@drawable/ic_nav_book"
             android:tint="@color/nav_unselected" />
 
         <TextView
+            android:id="@+id/tv_nav_book"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Book"
             android:textColor="@color/nav_unselected"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- Profile -->
@@ -107,19 +112,21 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:id="@+id/iv_nav_profile"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Profile"
-            android:src="@android:drawable/ic_menu_myplaces"
+            android:src="@drawable/ic_nav_profile"
             android:tint="@color/nav_unselected" />
 
         <TextView
+            android:id="@+id/tv_nav_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Profile"
             android:textColor="@color/nav_unselected"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>
