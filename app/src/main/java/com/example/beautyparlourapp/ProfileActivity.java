@@ -6,11 +6,14 @@ import android.content.SharedPreferences;
 import android.graphics.Outline;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,10 +23,17 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -33,10 +43,17 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String KEY_USER_EMAIL      = "user_email";
     private static final String KEY_AVATAR_URI     = "avatar_uri";
     private static final String KEY_AVATAR_URL_REMOTE = "avatar_url_remote";
+    private static final String KEY_STYLE_JOURNEY_URIS = "style_journey_uris";
 
     private GestureDetector swipeDetector;
     private ImageView imgAvatar;
     private ActivityResultLauncher<String> imagePickerLauncher;
+    
+    // Style Journey Additions
+    private ActivityResultLauncher<String> journeyMediaPickerLauncher;
+    private RecyclerView rvStyleJourney;
+    private StyleJourneyAdapter journeyAdapter;
+    private List<String> journeyMediaUris = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +103,144 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
 
+        // Register launcher for Style Journey media
+        journeyMediaPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetMultipleContents(), // Supports selecting multiple items
+                uris -> {
+                    if (uris != null && !uris.isEmpty()) {
+                        for (Uri uri : uris) {
+                            try {
+                                getContentResolver().takePersistableUriPermission(
+                                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } catch (SecurityException e) {
+                                Log.e("ProfileActivity", "Failed to take persistable permission", e);
+                            }
+                            journeyMediaUris.add(uri.toString());
+                        }
+                        saveJourneyUris();
+                        journeyAdapter.notifyDataSetChanged();
+                        Toast.makeText(this, "Added to Style Journey!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         updateProfileUI();
         setupChangePhotoButton();
         setupAvatarInteraction();  // Gesture 5 – tap = full-screen popup
         setupSwipeNavigation();    // Gesture 4 – swipe left/right
+        setupStyleJourneyGrid();
         attachFooter();
+    }
+
+    // ── Style Journey Setup ───────────────────────────────────────────────────
+    private void setupStyleJourneyGrid() {
+        rvStyleJourney = findViewById(R.id.rv_style_journey);
+        ImageView btnAddMedia = findViewById(R.id.btn_add_media);
+
+        // Load saved URIs
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        String savedUris = prefs.getString(KEY_STYLE_JOURNEY_URIS, "");
+        if (!savedUris.isEmpty()) {
+            journeyMediaUris.addAll(Arrays.asList(savedUris.split(",")));
+        }
+        
+        // Setup Grid
+        rvStyleJourney.setLayoutManager(new GridLayoutManager(this, 3));
+        journeyAdapter = new StyleJourneyAdapter(journeyMediaUris);
+        rvStyleJourney.setAdapter(journeyAdapter);
+        
+        // Setup Add Button
+        btnAddMedia.setOnClickListener(v -> {
+            journeyMediaPickerLauncher.launch("image/*");
+            // To allow videos too, you could use "*/*" and filter mime types,
+            // but "image/*" fits the profile mockup nicely for now.
+        });
+    }
+
+    private void saveJourneyUris() {
+        if (journeyMediaUris.isEmpty()) return;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < journeyMediaUris.size(); i++) {
+            sb.append(journeyMediaUris.get(i));
+            if (i < journeyMediaUris.size() - 1) sb.append(",");
+        }
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        prefs.edit().putString(KEY_STYLE_JOURNEY_URIS, sb.toString()).apply();
+    }
+
+    // ── Style Journey RecyclerView Adapter ────────────────────────────────────
+    private class StyleJourneyAdapter extends RecyclerView.Adapter<StyleJourneyAdapter.ViewHolder> {
+        private final List<String> mediaUris;
+
+        public StyleJourneyAdapter(List<String> mediaUris) {
+            this.mediaUris = mediaUris;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_style_journey, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            String uriString = mediaUris.get(position);
+            Glide.with(ProfileActivity.this)
+                    .load(Uri.parse(uriString))
+                    .centerCrop()
+                    .into(holder.imgStyle);
+            
+            // Optional: Launch full screen on click
+            holder.itemView.setOnClickListener(v -> showGridImageFullScreen(Uri.parse(uriString)));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mediaUris.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            ImageView imgStyle;
+            ViewHolder(View itemView) {
+                super(itemView);
+                imgStyle = itemView.findViewById(R.id.img_style);
+            }
+        }
+    }
+
+    private void showGridImageFullScreen(Uri imageUri) {
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setCanceledOnTouchOutside(true);
+
+        FrameLayout overlay = new FrameLayout(this);
+        overlay.setBackgroundColor(0xEE000000); // 93% black background
+
+        ImageView fullImg = new ImageView(this);
+        fullImg.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        fullImg.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        Glide.with(this).load(imageUri).into(fullImg);
+
+        // Close button
+        ImageView btnClose = new ImageView(this);
+        btnClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+        btnClose.setColorFilter(0xFFFFFFFF); // White icon
+        btnClose.setPadding(32, 32, 32, 32);
+        FrameLayout.LayoutParams closeParams = new FrameLayout.LayoutParams(
+                120, 120);
+        closeParams.gravity = Gravity.TOP | Gravity.END;
+        closeParams.setMargins(0, 48, 48, 0);
+        btnClose.setLayoutParams(closeParams);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        overlay.addView(fullImg);
+        overlay.addView(btnClose);
+
+        dialog.setContentView(overlay);
+        dialog.show();
     }
 
     // ── Change Photo (✎ pencil button) ───────────────────────────────────────

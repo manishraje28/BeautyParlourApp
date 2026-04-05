@@ -21,7 +21,7 @@
             <View
                 android:id="@+id/v_header_bg"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="140dp"
                 android:background="@drawable/bg_profile_header"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,10 +29,10 @@
                 android:id="@+id/tv_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="24dp"
                 android:text="My Profile"
                 android:textColor="#A07941"
-                android:textSize="32sp"
+                android:textSize="28sp"
                 android:textStyle="normal"
                 android:fontFamily="serif"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,10 +43,10 @@
                 android:id="@+id/tv_header_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:text="Your beauty journey"
                 android:textColor="#7A5E35"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@id/tv_header_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -137,38 +137,38 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="28dp">
+                        android:padding="20dp">
 
                         <FrameLayout
-                            android:layout_width="120dp"
-                            android:layout_height="120dp">
+                            android:layout_width="96dp"
+                            android:layout_height="96dp">
 
                             <!-- Avatar -->
                             <ImageView
                                 android:id="@+id/img_avatar"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:layout_gravity="center"
                                 android:background="@drawable/bg_profile_placeholder"
                                 android:scaleType="centerCrop" />
 
                             <!-- Outer gold ring -->
                             <View
-                                android:layout_width="112dp"
-                                android:layout_height="112dp"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
                                 android:layout_gravity="center"
                                 android:background="@drawable/bg_avatar_ring_premium" />
 
                             <!-- Tap to pick a new photo from gallery -->
                             <ImageView
                                 android:id="@+id/btn_change_photo"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
                                 android:layout_gravity="bottom|end"
-                                android:layout_marginEnd="6dp"
-                                android:layout_marginBottom="6dp"
+                                android:layout_marginEnd="2dp"
+                                android:layout_marginBottom="2dp"
                                 android:background="@drawable/bg_edit_circle"
-                                android:padding="6dp"
+                                android:padding="5dp"
                                 android:src="@drawable/ic_pencil_gold"
                                 android:clickable="true"
                                 android:focusable="true"/>
@@ -178,38 +178,38 @@
                             android:id="@+id/tv_profile_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="10dp"
                             android:text="manish"
                             android:textColor="#594627"
                             android:fontFamily="serif"
-                            android:textSize="26sp" />
+                            android:textSize="22sp" />
 
                         <TextView
                             android:id="@+id/tv_profile_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:text="manishbraje@gmail.com"
                             android:textColor="#8C6239"
-                            android:textSize="15sp" />
+                            android:textSize="13sp" />
 
                         <!-- Gold divider -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginTop="16dp"
                             android:background="#E5D1B8" />
 
                         <Button
                             android:id="@+id/btn_logout"
                             android:layout_width="match_parent"
-                            android:layout_height="54dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="16dp"
                             android:background="@drawable/bg_logout_btn_gradient"
                             app:backgroundTint="@null"
                             android:textAllCaps="false"
                             android:fontFamily="serif"
-                            android:textSize="20sp"
+                            android:textSize="16sp"
                             android:textColor="#8C6239"
                             android:text="Logout" />
                     </LinearLayout>
@@ -221,8 +221,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="20dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
@@ -235,11 +235,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:padding="20dp">
+                        android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:src="@drawable/ic_calendar_decor" />
 
                         <LinearLayout
@@ -255,7 +255,7 @@
                                 android:text="View Bookings"
                                 android:textColor="#594627"
                                 android:fontFamily="serif"
-                                android:textSize="22sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -263,15 +263,62 @@
                                 android:layout_marginTop="2dp"
                                 android:text="Your Upcoming Appointments"
                                 android:textColor="#8C6239"
-                                android:textSize="14sp" />
+                                android:textSize="12sp" />
                         </LinearLayout>
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:src="@drawable/ic_arrow_right_gold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- My Style Journey Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="24dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Style Journey"
+                            android:textColor="#CFA066"
+                            android:fontFamily="serif"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true" />
+
+                        <ImageView
+                            android:id="@+id/btn_add_media"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_edit_circle"
+                            android:padding="6dp"
+                            android:src="@drawable/ic_add_gold"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </RelativeLayout>
+
+                    <!-- Media Grid -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_style_journey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
