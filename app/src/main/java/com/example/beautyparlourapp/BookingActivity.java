@@ -126,18 +126,21 @@ public class BookingActivity extends AppCompatActivity {
 
             bookButton.setEnabled(false);
 
+            // TODO: Retrieve specific price per service, providing fallback price for now
+            double estimatedPrice = 65.0; 
+
             // Create booking directly in Firestore
-            FirebaseManager.getInstance().createBooking(service, date, time,
+            FirebaseManager.getInstance().createBooking(service, date, time, estimatedPrice,
                     new FirebaseManager.BookingCallback() {
                         @Override
                         public void onSuccess() {
                             bookButton.setEnabled(true);
                             Toast.makeText(BookingActivity.this,
-                                    "✓ Booking confirmed for " + service,
+                                    "✓ Booking submitted for " + service + " (Pending Admin Approval)",
                                     Toast.LENGTH_LONG).show();
                             
-                            // Schedule local notification 2 hours prior to this appointment
-                            scheduleReminder(service, time);
+                            // Note: Local AlarmManager reminder has been replaced by Real FCM Push Notifications 
+                            // sent remotely from the Node.js backend whenever the Admin explicitly approves it.
                         }
 
                         @Override

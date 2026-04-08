@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@drawable/bg_footer"
+    android:elevation="12dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <!-- Bookings Tab -->
+    <LinearLayout
+        android:id="@+id/tab_admin_bookings"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ic_admin_bookings"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_nav_book"
+            app:tint="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/tv_admin_bookings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="BOOKINGS"
+            android:textColor="#A5A5A5"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Services Tab -->
+    <LinearLayout
+        android:id="@+id/tab_admin_services"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ic_admin_services"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_scissors"
+            app:tint="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/tv_admin_services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="SERVICES"
+            android:textColor="#A5A5A5"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Offers Tab -->
+    <LinearLayout
+        android:id="@+id/tab_admin_offers"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ic_admin_offers"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_sparkle"
+            app:tint="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/tv_admin_offers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="OFFERS"
+            android:textColor="#A5A5A5"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Profile Tab -->
+    <LinearLayout
+        android:id="@+id/tab_admin_profile"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ic_admin_profile"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_nav_profile"
+            app:tint="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/tv_admin_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="PROFILE"
+            android:textColor="#A5A5A5"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

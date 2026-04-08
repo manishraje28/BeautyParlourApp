@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <!-- User Avatar Container -->
+        <FrameLayout
+            android:id="@+id/fl_avatar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- User Initials Circle -->
+            <TextView
+                android:id="@+id/tv_initials"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_initials_circle"
+                android:gravity="center"
+                android:text="EM"
+                android:textColor="#C08030"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- User Profile Pic (Shown if image exists) -->
+            <ImageView
+                android:id="@+id/iv_profile_pic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <!-- User Name -->
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="serif"
+            android:text="Eleanor Moore"
+            android:textColor="#9E2A2B"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_status_pill"
+            app:layout_constraintStart_toEndOf="@id/fl_avatar"
+            app:layout_constraintTop_toTopOf="@id/fl_avatar" />
+
+        <!-- Service Name -->
+        <TextView
+            android:id="@+id/tv_service_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="Silk Press &amp; Deep Conditioning "
+            android:textColor="#F28482"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_status_pill"
+            app:layout_constraintStart_toEndOf="@id/fl_avatar"
+            app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
+
+        <!-- Status Pill -->
+        <TextView
+            android:id="@+id/tv_status_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_pending_light"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="PENDING"
+            android:textColor="#D81B60"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_user_name" />
+
+        <!-- Divider Line -->
+        <View
+            android:id="@+id/divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="#F5F5F5"
+            app:layout_constraintTop_toBottomOf="@id/fl_avatar" />
+
+        <!-- Date / Time Row -->
+        <LinearLayout
+            android:id="@+id/ll_datetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/divider_1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:background="@drawable/bg_icon_light"
+                    android:src="@drawable/ic_calendar_decor"
+                    app:tint="#F28482" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DATE"
+                        android:textColor="#F28482"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_date_only"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Oct 24, 2023"
+                        android:textColor="#9E2A2B"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:background="@drawable/bg_icon_light"
+                    android:src="@drawable/ic_calendar_decor"
+                    app:tint="#F28482" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TIME"
+                        android:textColor="#F28482"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_time_only"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="10:30 AM"
+                        android:textColor="#9E2A2B"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider Line -->
+        <View
+            android:id="@+id/divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#F5F5F5"
+            app:layout_constraintTop_toBottomOf="@id/ll_datetime" />
+
+        <!-- Footer Row: Price + Buttons -->
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="serif"
+            android:text="$185.00"
+            android:textColor="#D89A29"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_2" />
+
+        <Button
+            android:id="@+id/btn_approve"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_approve_button"
+            android:paddingHorizontal="24dp"
+            android:text="Approve"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_2" />
+
+        <TextView
+            android:id="@+id/btn_reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="Reject"
+            android:textColor="#F28482"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btn_approve"
+            app:layout_constraintEnd_toStartOf="@id/btn_approve"
+            app:layout_constraintTop_toTopOf="@id/btn_approve" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

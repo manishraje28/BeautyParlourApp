@@ -140,6 +140,52 @@ app.get('/api/services/:id', async (req, res) => {
     }
 });
 
+app.post('/api/notifications/send', async (req, res) => {
+    console.log('📣 POST /api/notifications/send', req.body);
+
+    if (!firebaseDb) {
+        return res.status(503).json({ success: false, error: 'Firebase not initialized' });
+    }
+
+    const { userId, title, body } = req.body;
+    if (!userId || !title || !body) {
+        return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
+    try {
+        // 1. Fetch user to get their FCM Token
+        const userDoc = await firebaseDb.collection('users').doc(userId).get();
+        if (!userDoc.exists) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        const userData = userDoc.data();
+        const fcmToken = userData.fcmToken;
+
+        if (!fcmToken) {
+            return res.status(404).json({ success: false, error: 'User does not have an FCM token registered' });
+        }
+
+        // 2. Prepare the FCM payload
+        const message = {
+            notification: {
+                title: title,
+                body: body
+            },
+            token: fcmToken
+        };
+
+        // 3. Send the message via Firebase Admin
+        const response = await admin.messaging().send(message);
+        console.log('✅ Successfully sent message:', response);
+        res.json({ success: true, messageId: response });
+
+    } catch (error) {
+        console.error('❌ Error sending notification:', error.message);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // ══════════════════════════════════════════════════════════════════
 // BOOKINGS ENDPOINTS (FIREBASE)
 // ══════════════════════════════════════════════════════════════════

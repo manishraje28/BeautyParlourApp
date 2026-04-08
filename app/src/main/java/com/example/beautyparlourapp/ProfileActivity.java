@@ -184,6 +184,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Load saved URIs
         SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         String savedUris = prefs.getString(KEY_STYLE_JOURNEY_URIS, "");
+        journeyMediaUris.clear(); // Ensure clean slate before adding
         if (!savedUris.isEmpty()) {
             journeyMediaUris.addAll(Arrays.asList(savedUris.split(",")));
         } // NOTE: local loading assumes it's already properly ordered because we save it natively reversed.
@@ -423,7 +424,7 @@ public class ProfileActivity extends AppCompatActivity {
                 new FirebaseManager.ProfileCallback() {
                     @Override
                     public void onSuccess(String name, String email,
-                                         String phone, String avatarUrl, List<String> journeyUrls) {
+                                         String phone, String avatarUrl, List<String> journeyUrls, String role) {
                         
                         // Show Name/Email
                         ((TextView) findViewById(R.id.tv_profile_name)).setText(name);
@@ -616,14 +617,17 @@ public class ProfileActivity extends AppCompatActivity {
 
             logoutButton.setOnClickListener(v -> {
                 FirebaseManager.getInstance().logout();
-                prefs.edit()
-                        .putBoolean(KEY_IS_LOGGED_IN, false)
-                        .remove(KEY_USER_NAME)
-                        .remove(KEY_USER_EMAIL)
-                        .remove(KEY_AVATAR_URL_REMOTE)
-                        .apply();
+                prefs.edit().clear().apply();
                 imgAvatar.setImageURI(null);
+                imgAvatar.setImageResource(R.drawable.ic_nav_profile); // Reset default icon
                 Glide.with(this).clear(imgAvatar);
+                
+                // Clear in-memory lists so they don't persist
+                journeyMediaUris.clear();
+                if (journeyAdapter != null) {
+                    journeyAdapter.notifyDataSetChanged();
+                }
+                
                 updateProfileUI();
             });
 
@@ -641,9 +645,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void attachFooter() {
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        String role = prefs.getString("user_role", "user");
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.footer_container, new FooterFragment())
-                .commit();
+        if ("admin".equals(role)) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.footer_container, new AdminFooterFragment())
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.footer_container, new FooterFragment())
+                    .commit();
+        }
     }
 }

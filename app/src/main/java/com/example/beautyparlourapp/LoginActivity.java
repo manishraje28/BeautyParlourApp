@@ -30,6 +30,14 @@ public class LoginActivity extends AppCompatActivity {
             String email    = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
 
+            if (email.equals("admin") && password.equals("admin")) {
+                Toast.makeText(LoginActivity.this, "Welcome to Admin Dashboard", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+                startActivity(intent);
+                finish();
+                return;
+            }
+
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
                 return;
@@ -42,21 +50,38 @@ public class LoginActivity extends AppCompatActivity {
                     new FirebaseManager.LoginCallback() {
                         @Override
                         public void onSuccess(String name, String userEmail,
-                                              String phone, String avatarUrl) {
+                                              String phone, String avatarUrl, String role) {
                             // Sync to SharedPreferences so ProfileActivity displays instantly
                             SharedPreferences prefs = getSharedPreferences(
                                     ProfileActivity.PREF_NAME, MODE_PRIVATE);
                             prefs.edit()
+                                    .clear() // Wipe previous user's data forcefully!
                                     .putBoolean(ProfileActivity.KEY_IS_LOGGED_IN, true)
                                     .putString(ProfileActivity.KEY_USER_NAME,  name)
                                     .putString(ProfileActivity.KEY_USER_EMAIL, userEmail)
                                     .putString("avatar_url_remote", avatarUrl)
+                                    .putString("user_role", role)
                                     .apply();
 
+                            // Force save the latest FCM token 
+                            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        FirebaseManager.getInstance().updateFcmToken(task.getResult());
+                                    }
+                                });
+
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(LoginActivity.this,
-                                    "Welcome back, " + name + "!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            
+                            if ("admin".equals(role)) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Welcome to Admin Console", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, AdminDashboardActivity.class));
+                            } else {
+                                Toast.makeText(LoginActivity.this,
+                                        "Welcome back, " + name + "!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            }
                             finish();
                         }
 

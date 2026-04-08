@@ -222,8 +222,7 @@ public class FirebaseManager {
     // CREATE BOOKING (direct Firestore — top-level bookings collection)
     // ══════════════════════════════════════════════════════════════════════════
 
-    public void createBooking(String service, String date, String time,
-                              BookingCallback callback) {
+    public void createBooking(String service, String date, String time, double price, BookingCallback callback) {
         String userId;
         if (isLoggedIn()) {
             userId = getCurrentUser().getUid();
@@ -233,10 +232,16 @@ public class FirebaseManager {
 
         Map<String, Object> booking = new HashMap<>();
         booking.put("userId",    userId);
+        if (isLoggedIn()) {
+            booking.put("userName", getCurrentUser().getDisplayName() != null ? getCurrentUser().getDisplayName() : "Guest User");
+        } else {
+            booking.put("userName", "Guest User");
+        }
         booking.put("service",   service);
         booking.put("date",      date);
         booking.put("time",      time);
-        booking.put("status",    "confirmed");
+        booking.put("price",     price);
+        booking.put("status",    "pending"); // Changed from confirmed to pending for Admin approval
         booking.put("createdAt", new Timestamp(new Date()));
 
         db.collection("bookings").add(booking)
@@ -273,14 +278,66 @@ public class FirebaseManager {
                         // Combine date and time
                         String datetime = (date != null ? date : "") + " at " + (time != null ? time : "");
                         
-                        bookings.add(new com.example.beautyparlourapp.models.Booking(
+                        com.example.beautyparlourapp.models.Booking b = new com.example.beautyparlourapp.models.Booking(
+                            doc.getId(),
                             service != null ? service : "Unknown Service",
                             datetime,
-                            status != null ? status : "Confirmed"
-                        ));
+                            status != null ? status : "Pending"
+                        );
+                        b.setUserId(doc.getString("userId"));
+                        b.setUserName(doc.getString("userName"));
+
+                        Double price = doc.getDouble("price");
+                        if (price != null) {
+                            b.setPrice(price);
+                        }
+                        
+                        bookings.add(b);
                     }
                     callback.onSuccess(bookings);
                 })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void fetchAllBookings(FetchBookingsCallback callback) {
+        db.collection("bookings")
+                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<com.example.beautyparlourapp.models.Booking> bookings = new ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        String service = doc.getString("service");
+                        String date = doc.getString("date");
+                        String time = doc.getString("time");
+                        String status = doc.getString("status");
+                        
+                        String datetime = (date != null ? date : "") + " at " + (time != null ? time : "");
+                        
+                        com.example.beautyparlourapp.models.Booking b = new com.example.beautyparlourapp.models.Booking(
+                            doc.getId(),
+                            service != null ? service : "Unknown Service",
+                            datetime,
+                            status != null ? status : "Pending"
+                        );
+                        b.setUserId(doc.getString("userId"));
+                        b.setUserName(doc.getString("userName") != null ? doc.getString("userName") : "Guest User");
+                        
+                        Double price = doc.getDouble("price");
+                        if (price != null) {
+                            b.setPrice(price);
+                        }
+                        
+                        bookings.add(b);
+                    }
+                    callback.onSuccess(bookings);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void updateBookingStatus(String bookingId, String newStatus, BookingCallback callback) {
+        db.collection("bookings").document(bookingId)
+                .update("status", newStatus)
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
@@ -303,6 +360,7 @@ public class FirebaseManager {
         user.put("phone",      phone);
         user.put("email",      email);
         user.put("avatarUrl",  "");
+        user.put("role",       "user"); // Set default role
         user.put("joinedDate", new Timestamp(new Date()));
 
         db.collection("users").document(uid)
@@ -322,7 +380,7 @@ public class FirebaseManager {
     }
 
     public interface ProfileCallback {
-        void onSuccess(String name, String email, String phone, String avatarUrl, List<String> styleJourneyUrls);
+        void onSuccess(String name, String email, String phone, String avatarUrl, List<String> styleJourneyUrls, String role);
         void onFailure(String error);
     }
 
@@ -346,7 +404,8 @@ public class FirebaseManager {
                                 doc.getString("email"),
                                 doc.getString("phone"),
                                 doc.getString("avatarUrl"),
-                                journeyUrls);
+                                journeyUrls,
+                                doc.contains("role") ? doc.getString("role") : "user");
                     } else {
                         callback.onFailure("User profile not found in database.");
                     }
@@ -363,12 +422,23 @@ public class FirebaseManager {
                                 doc.getString("name"),
                                 doc.getString("email"),
                                 doc.getString("phone"),
-                                doc.getString("avatarUrl"));
+                                doc.getString("avatarUrl"),
+                                doc.contains("role") ? doc.getString("role") : "user");
                     } else {
                         callback.onFailure("User profile not found in database.");
                     }
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void updateFcmToken(String token) {
+        FirebaseUser user = getCurrentUser();
+        if (user != null && token != null) {
+            db.collection("users").document(user.getUid())
+                    .update("fcmToken", token)
+                    .addOnSuccessListener(v -> Log.d(TAG, "FCM Token updated successfully"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to update FCM Token", e));
+        }
     }
 
     // ── Upload Style Journey Media → Cloudinary, then arrayUnion → Firestore ────────────
@@ -476,7 +546,7 @@ public class FirebaseManager {
     // ── Save Booking → Firestore (legacy method kept for compatibility) ──────
     public void saveBooking(String service, String date, String time,
                             BookingCallback callback) {
-        createBooking(service, date, time, callback);
+        createBooking(service, date, time, 65.0, callback);
     }
 
     // ── Callbacks ─────────────────────────────────────────────────────────────
@@ -486,7 +556,7 @@ public class FirebaseManager {
     }
 
     public interface LoginCallback {
-        void onSuccess(String name, String email, String phone, String avatarUrl);
+        void onSuccess(String name, String email, String phone, String avatarUrl, String role);
         void onFailure(String error);
     }
 

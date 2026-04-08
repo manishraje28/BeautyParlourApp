@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FEF5F5"> <!-- Light pinkish background -->
+
+    <!-- Header Section -->
+    <TextView
+        android:id="@+id/tv_admin_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="serif"
+        android:text="ADMIN CONSOLE"
+        android:textColor="#D89A29"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_admin_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="serif"
+        android:text="Promotions Hub"
+        android:textColor="#9E2A2B"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_admin_title" />
+
+    <!-- Add New Promotion Button -->
+    <Button
+        android:id="@+id/btn_add_new"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_approve_button"
+        app:backgroundTint="@null"
+        android:drawableLeft="@drawable/ic_add_gold"
+        android:drawableTint="#FFFFFF"
+        android:paddingHorizontal="24dp"
+        android:text="Create New Promotion"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tv_admin_subtitle" />
+
+    <!-- Title Row -->
+    <LinearLayout
+        android:id="@+id/ll_list_title_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_new">
+        
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_sparkle"
+            app:tint="#9E2A2B" />
+            
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Offers &amp; Packages"
+            android:textColor="#9E2A2B"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+            
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_admin_items"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/admin_footer_container"
+        app:layout_constraintTop_toBottomOf="@id/ll_list_title_row"
+        tools:listitem="@layout/item_admin_offer" />
+
+    <!-- Admin Footer Navigation Placeholder -->
+    <FrameLayout
+        android:id="@+id/admin_footer_container"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

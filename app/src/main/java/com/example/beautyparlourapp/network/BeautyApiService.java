@@ -5,6 +5,9 @@ import com.example.beautyparlourapp.model.OfferResponse;
 import com.example.beautyparlourapp.model.BookingRequest;
 import com.example.beautyparlourapp.model.BookingResponse;
 
+import com.example.beautyparlourapp.model.NotificationRequest;
+import com.example.beautyparlourapp.model.NotificationResponse;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -34,4 +37,8 @@ public interface BeautyApiService {
     // Health check
     @GET("api/health")
     Call<ServiceResponse> healthCheck();
+
+    // Push Notifications
+    @POST("api/notifications/send")
+    Call<NotificationResponse> sendNotification(@Body NotificationRequest request);
 }

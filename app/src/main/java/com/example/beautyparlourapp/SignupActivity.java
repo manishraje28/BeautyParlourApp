@@ -60,6 +60,16 @@ public class SignupActivity extends AppCompatActivity {
                     new FirebaseManager.SignUpCallback() {
                         @Override
                         public void onSuccess() {
+                            // Sync to SharedPreferences for instant display
+                            getSharedPreferences(ProfileActivity.PREF_NAME, MODE_PRIVATE)
+                                .edit()
+                                .clear()
+                                .putBoolean(ProfileActivity.KEY_IS_LOGGED_IN, true)
+                                .putString(ProfileActivity.KEY_USER_NAME, fullName)
+                                .putString(ProfileActivity.KEY_USER_EMAIL, email)
+                                .putString("user_role", "user")
+                                .apply();
+
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(SignupActivity.this,
                                     "Account created! Welcome!", Toast.LENGTH_SHORT).show();

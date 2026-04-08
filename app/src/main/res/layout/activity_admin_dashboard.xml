@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FEF5F5"> <!-- Light pinkish background -->
+
+    <!-- Header Section -->
+    <TextView
+        android:id="@+id/tv_admin_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="serif"
+        android:text="Appointment Requests"
+        android:textColor="#9E2A2B"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_admin_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="Manage your premium guest list for today."
+        android:textColor="#F28482"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_admin_title" />
+
+    <!-- Segmented Tab Bar -->
+    <LinearLayout
+        android:id="@+id/ll_admin_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_admin_tab_container"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_admin_subtitle">
+
+        <!-- Pending Tab -->
+        <TextView
+            android:id="@+id/tab_pending"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_admin_tab_active"
+            android:gravity="center"
+            android:text="Pending"
+            android:textColor="#9E2A2B"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Approved Tab -->
+        <TextView
+            android:id="@+id/tab_approved"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Approved"
+            android:textColor="#F28482"
+            android:textSize="14sp" />
+
+        <!-- Completed Tab -->
+        <TextView
+            android:id="@+id/tab_completed"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Completed"
+            android:textColor="#F28482"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_admin_bookings"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/admin_footer_container"
+        app:layout_constraintTop_toBottomOf="@id/ll_admin_tabs"
+        tools:listitem="@layout/item_admin_booking" />
+
+    <!-- Admin Footer Navigation Placeholder -->
+    <FrameLayout
+        android:id="@+id/admin_footer_container"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

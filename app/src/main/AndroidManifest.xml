@@ -28,6 +28,15 @@
             android:name=".ViewBookingsActivity"
             android:exported="false" />
         <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminServicesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminOffersActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
@@ -52,6 +61,14 @@
             </intent-filter>
         </activity>
         
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".AppointmentReminderReceiver"
             android:enabled="true"
