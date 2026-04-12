@@ -165,6 +165,10 @@ public class AdminBookingsAdapter extends RecyclerView.Adapter<AdminBookingsAdap
                     sendPushNotification(booking.getUserId(), 
                             "Appointment Confirmed!", 
                             "Your " + booking.getServiceName() + " appointment is confirmed!");
+                } else if ("cancelled".equals(newStatus) && booking.getUserId() != null) {
+                    sendPushNotification(booking.getUserId(), 
+                            "Appointment Cancelled", 
+                            "Unfortunately, your " + booking.getServiceName() + " appointment has been rejected.");
                 }
             }
 
