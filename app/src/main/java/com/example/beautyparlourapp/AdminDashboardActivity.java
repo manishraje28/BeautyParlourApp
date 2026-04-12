@@ -1,10 +1,15 @@
 package com.example.beautyparlourapp;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,10 +27,24 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private List<Booking> allBookings = new ArrayList<>();
     private String currentFilter = "pending";
 
+    // Launcher for POST_NOTIFICATIONS
+    private final ActivityResultLauncher<String> requestNotificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (!isGranted) {
+                    Toast.makeText(this, "Please enable notifications to receive booking requests.", Toast.LENGTH_LONG).show();
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
 
         tabPending = findViewById(R.id.tab_pending);
         tabApproved = findViewById(R.id.tab_approved);
@@ -45,6 +64,15 @@ public class AdminDashboardActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.admin_footer_container, new AdminFooterFragment())
                 .commit();
+
+        // Subscribe to admin notifications topic
+        com.google.firebase.messaging.FirebaseMessaging.getInstance()
+                .subscribeToTopic("admin_notifications")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        android.util.Log.d("FCM", "Subscribed to admin_notifications topic");
+                    }
+                });
 
         selectTab("pending");
         fetchAdminBookings();

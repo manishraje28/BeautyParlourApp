@@ -21,8 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.beautyparlourapp.network.AccessTokenHelper;
+import com.example.beautyparlourapp.network.FcmRetrofitClient;
+import com.google.gson.JsonObject;
+
 import java.util.Calendar;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookingActivity extends AppCompatActivity {
 
@@ -139,8 +147,10 @@ public class BookingActivity extends AppCompatActivity {
                                     "✓ Booking submitted for " + service + " (Pending Admin Approval)",
                                     Toast.LENGTH_LONG).show();
                             
-                            // Note: Local AlarmManager reminder has been replaced by Real FCM Push Notifications 
-                            // sent remotely from the Node.js backend whenever the Admin explicitly approves it.
+                            // Send Push Notification to all Admins
+                            sendPushNotificationToAdmins(
+                                    "New Booking Request",
+                                    "A user has requested a " + service + " appointment for " + date + " at " + time + ".");
                         }
 
                         @Override
@@ -152,6 +162,44 @@ public class BookingActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    private void sendPushNotificationToAdmins(String title, String body) {
+        new Thread(() -> {
+            String accessToken = AccessTokenHelper.getAccessToken(BookingActivity.this);
+            if (accessToken == null) return;
+
+            JsonObject messageObj = new JsonObject();
+            // Firebase HTTP v1 uses standard topic routing: "topic": "topic_name"
+            messageObj.addProperty("topic", "admin_notifications");
+            
+            JsonObject notificationObj = new JsonObject();
+            notificationObj.addProperty("title", title);
+            notificationObj.addProperty("body", body);
+            
+            messageObj.add("notification", notificationObj);
+
+            JsonObject rootPayload = new JsonObject();
+            rootPayload.add("message", messageObj);
+
+            String bearerValue = "Bearer " + accessToken;
+            FcmRetrofitClient.getInstance().getApi().sendNotification(bearerValue, rootPayload)
+                    .enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            if (response.isSuccessful()) {
+                                android.util.Log.d("FCM", "Admin Notification sent successfully via Topics!");
+                            } else {
+                                android.util.Log.e("FCM", "Failed to send admin notification: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            android.util.Log.e("FCM", "Network error sending admin notification", t);
+                        }
+                    });
+        }).start();
     }
 
     private void scheduleReminder(String service, String timeStr) {
