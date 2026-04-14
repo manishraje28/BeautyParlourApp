@@ -35,8 +35,10 @@
             android:exported="false" />
         <activity
             android:name=".AdminOffersActivity"
-            android:exported="false" />
+            android:exported="false" />            
         <activity
+            android:name=".AddServiceActivity"
+            android:exported="false" />        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity

@@ -206,7 +206,7 @@
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
                                 android:background="#F0F0F0"
-                                android:src="@drawable/ic_sparkle" />
+                                android:src="@drawable/s_haircut" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -277,7 +277,7 @@
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
                                 android:background="#F0F0F0"
-                                android:src="@drawable/ic_sparkle" />
+                                android:src="@drawable/s_facial" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -348,7 +348,7 @@
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
                                 android:background="#F0F0F0"
-                                android:src="@drawable/ic_sparkle" />
+                                android:src="@drawable/s_bridal" />
 
                             <View
                                 android:layout_width="match_parent"
