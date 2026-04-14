@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -76,6 +77,7 @@ public class ServicesActivity extends AppCompatActivity {
         String description = (String) service.get("description");
         String duration = (String) service.get("duration");
         String category = (String) service.get("category");
+        String imageUrl = (String) service.get("imageUrl");
 
         // Set to default if empty
         if (category == null || category.isEmpty()) category = "General";
@@ -95,23 +97,30 @@ public class ServicesActivity extends AppCompatActivity {
         tvChip.setText(category);
 
         // Intelligently map categories to our new vector icons!
-        switch (category.toLowerCase()) {
-            case "skincare":
-            case "facial":
-                ivIcon.setImageResource(R.drawable.ic_category_skincare);
-                break;
-            case "makeup":
-            case "bridal makeup":
-                ivIcon.setImageResource(R.drawable.ic_category_makeup);
-                break;
-            case "spa":
-            case "massage":
-                ivIcon.setImageResource(R.drawable.ic_category_spa);
-                break;
-            case "hair":
-            default:
-                ivIcon.setImageResource(R.drawable.ic_category_hair);
-                break;
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                 .load(imageUrl)
+                 .circleCrop()
+                 .into(ivIcon);
+        } else {
+            switch (category.toLowerCase()) {
+                case "skincare":
+                case "facial":
+                    ivIcon.setImageResource(R.drawable.ic_category_skincare);
+                    break;
+                case "makeup":
+                case "bridal makeup":
+                    ivIcon.setImageResource(R.drawable.ic_category_makeup);
+                    break;
+                case "spa":
+                case "massage":
+                    ivIcon.setImageResource(R.drawable.ic_category_spa);
+                    break;
+                case "hair":
+                default:
+                    ivIcon.setImageResource(R.drawable.ic_category_hair);
+                    break;
+            }
         }
 
         // Long press listener

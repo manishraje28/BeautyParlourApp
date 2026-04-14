@@ -153,22 +153,81 @@ public class FirebaseManager {
                 .addOnSuccessListener(querySnapshot -> {
                     List<Map<String, Object>> services = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                        Map<String, Object> service = new HashMap<>();
-                        service.put("id", doc.getId());
-                        service.put("name", doc.getString("name"));
-                        Object priceObj = doc.get("price");
-                        int price = 0;
-                        if (priceObj instanceof Long) price = ((Long) priceObj).intValue();
-                        else if (priceObj instanceof Double) price = ((Double) priceObj).intValue();
-                        service.put("price", price);
-                        service.put("duration", doc.getString("duration"));
-                        service.put("description", doc.getString("description"));
-                        service.put("category", doc.getString("category"));
-                        services.add(service);
+                        try {
+                            Map<String, Object> service = new HashMap<>();
+                            service.put("id", doc.getId());
+                            service.put("name", doc.getString("name"));
+                            Object priceObj = doc.get("price");
+                            int price = 0;
+                            if (priceObj instanceof Long) price = ((Long) priceObj).intValue();
+                            else if (priceObj instanceof Double) price = ((Double) priceObj).intValue();
+                            service.put("price", price);
+                            service.put("duration", doc.getString("duration"));
+                            service.put("description", doc.getString("description"));
+                            service.put("category", doc.getString("category"));
+                            if (doc.contains("imageUrl")) {
+                                service.put("imageUrl", doc.getString("imageUrl"));
+                            }
+                            services.add(service);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing service doc " + doc.getId(), e);
+                        }
                     }
                     callback.onSuccess(services);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void addService(String name, int price, String duration, String description, String category, String imageUrl, ServiceActionCallback callback) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", name);
+        data.put("price", price);
+        data.put("duration", duration);
+        data.put("description", description);
+        data.put("category", category);
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            data.put("imageUrl", imageUrl);
+        }
+
+        db.collection("services").add(data)
+                .addOnSuccessListener(ref -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void deleteService(String serviceId, ServiceActionCallback callback) {
+        db.collection("services").document(serviceId).delete()
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void uploadServiceImage(Context context, Uri uri, PhotoUploadCallback callback) {
+        initCloudinaryIfNeeded(context);
+        if (uri == null) {
+            callback.onFailure("No image URI provided");
+            return;
+        }
+        MediaManager.get().upload(uri)
+                .option("folder", "services") 
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) { }
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) { }
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        Log.d(TAG, "Service Image uploaded to Cloudinary: " + url);
+                        callback.onSuccess(url);
+                    }
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        Log.e(TAG, "Cloudinary service image upload error: " + error.getDescription());
+                        callback.onFailure(error.getDescription());
+                    }
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) { }
+                })
+                .dispatch();
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -582,6 +641,11 @@ public class FirebaseManager {
 
     public interface UsersCallback {
         void onSuccess(List<User> users);
+        void onFailure(String error);
+    }
+
+    public interface ServiceActionCallback {
+        void onSuccess();
         void onFailure(String error);
     }
 }
