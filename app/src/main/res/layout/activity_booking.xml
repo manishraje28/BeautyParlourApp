@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:background="#FAFAFA">
 
-    <!-- Gradient Background -->
+    <!-- Top Gradient / Solid -->
     <View
         android:id="@+id/v_top_gradient"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="@drawable/bg_booking_header_gradient"
+        android:layout_height="220dp"
+        android:background="#DEC6B6"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Top Bar with Back Button -->
@@ -25,82 +25,36 @@
         app:layout_constraintTop_toTopOf="parent">
         
         <ImageView
+            android:id="@+id/iv_back"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_back_white_24dp"
             app:tint="#FFFFFF"
-            tools:ignore="UseAppTint" />
+            android:clickable="true"
+            android:focusable="true"/>
             
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Booking"
+            android:text="Set Appointment"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginEnd="24dp" /> <!-- Compensate for back button to center text -->
-    </LinearLayout>
-
-    <!-- Timeline Stepper -->
-    <LinearLayout
-        android:id="@+id/ll_stepper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="40dp"
-        android:paddingTop="10dp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/ll_top_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Service"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="40dp"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="#FFFFFF"
-            android:alpha="0.5" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date &amp; Time"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="40dp"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="#FFFFFF"
-            android:alpha="0.5" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirm"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:alpha="0.7" />
+            android:layout_marginEnd="24dp" />
     </LinearLayout>
 
     <!-- White Bottom Sheet Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_booking_sheet"
-        android:padding="28dp"
-        app:layout_constraintTop_toBottomOf="@id/ll_stepper"
+        android:paddingTop="28dp"
+        android:paddingBottom="28dp"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/ll_top_bar"
         app:layout_constraintBottom_toTopOf="@id/footer_container">
 
         <ScrollView
@@ -116,119 +70,108 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select Service"
-                    android:textColor="#222222"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Gold line decorative -->
-                <View
-                    android:layout_width="30dp"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="#CA9F51" />
-
-                <Spinner
-                    android:id="@+id/spinner_service"
+                <!-- Month Selector -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:background="@drawable/bg_spinner_stroke"
-                    android:paddingHorizontal="16dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&lt;"
+                        android:textColor="#424242"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="16dp" />
+
+                    <TextView
+                        android:id="@+id/tv_month_year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Feb"
+                        android:textColor="#222222"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&gt;"
+                        android:textColor="#424242"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="16dp" />
+                </LinearLayout>
+
+                <!-- Date Scroller -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginBottom="24dp"
+                    tools:listitem="@layout/item_booking_date"/>
+
+                <!-- Services Header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Services"
+                        android:textColor="#222222"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See All"
+                        android:textColor="#888888"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Services Scroller -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_services"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginBottom="24dp"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="4dp"
+                    tools:listitem="@layout/item_booking_service"/>
+
+                <!-- Time Slot Header -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Available Time"
+                    android:textColor="#222222"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- 3-Column Time Slots -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_time_slots"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:listitem="@layout/item_booking_time"
                     android:layout_marginBottom="24dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select Date"
-                    android:textColor="#222222"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="30dp"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="#CA9F51" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_rounded_card"
-                    android:padding="20dp"
-                    android:orientation="vertical"
-                    android:elevation="2dp"
-                    android:layout_marginBottom="24dp">
-
-                    <Button
-                        android:id="@+id/btn_pick_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="54dp"
-                        android:background="@drawable/bg_secondary_btn_stroke"
-                        android:text="📅 Choose Date"
-                        android:textColor="#B68846"
-                        android:textSize="14sp"
-                        app:backgroundTint="@null" />
-
-                    <TextView
-                        android:id="@+id/tv_selected_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Not selected"
-                        android:textAlignment="center"
-                        android:textColor="#757575"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select Time"
-                    android:textColor="#222222"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="30dp"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="#CA9F51" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_rounded_card"
-                    android:padding="20dp"
-                    android:orientation="vertical"
-                    android:elevation="2dp"
-                    android:layout_marginBottom="24dp">
-
-                    <Button
-                        android:id="@+id/btn_pick_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="54dp"
-                        android:background="@drawable/bg_secondary_btn_stroke"
-                        android:text="⏰ Choose Time"
-                        android:textColor="#B68846"
-                        android:textSize="14sp"
-                        app:backgroundTint="@null" />
-
-                    <TextView
-                        android:id="@+id/tv_selected_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Not selected"
-                        android:textAlignment="center"
-                        android:textColor="#757575"
-                        android:textSize="14sp" />
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
@@ -238,7 +181,7 @@
             android:layout_height="60dp"
             android:background="@drawable/bg_booking_btn_confirm"
             app:backgroundTint="@null"
-            android:text="Confirm Booking"
+            android:text="Book"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"

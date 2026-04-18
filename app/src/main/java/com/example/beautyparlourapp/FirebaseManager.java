@@ -721,4 +721,30 @@ public class FirebaseManager {
         void onSuccess(List<Map<String, Object>> images);
         void onFailure(String error);
     }
+
+    public interface BookedTimeSlotsCallback {
+        void onSuccess(List<String> bookedTimes);
+        void onFailure(String error);
+    }
+
+    public void fetchBookedTimeSlots(String date, BookedTimeSlotsCallback callback) {
+        db.collection("bookings")
+                .whereEqualTo("date", date)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> bookedTimes = new ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        String status = doc.getString("status");
+                        if (status != null && (status.equalsIgnoreCase("cancelled") || status.equalsIgnoreCase("rejected"))) {
+                            continue;
+                        }
+                        String time = doc.getString("time");
+                        if (time != null) {
+                            bookedTimes.add(time);
+                        }
+                    }
+                    callback.onSuccess(bookedTimes);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
 }
