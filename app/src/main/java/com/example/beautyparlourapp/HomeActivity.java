@@ -10,8 +10,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.beautyparlourapp.adapter.GalleryAdapter;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +26,9 @@ public class HomeActivity extends AppCompatActivity {
     private String pendingService;
     private LinearLayout offersContainer;
     private SwipeRefreshLayout swipeRefresh;
+    private RecyclerView rvGallery;
+    private GalleryAdapter galleryAdapter;
+    private List<Map<String, Object>> galleryImageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +37,36 @@ public class HomeActivity extends AppCompatActivity {
 
         offersContainer = findViewById(R.id.offers_container);
         swipeRefresh = findViewById(R.id.swipe_refresh_home);
+        rvGallery = findViewById(R.id.rv_home_gallery);
+
+        // Setup Pinterest-style Masonry Grid
+        rvGallery.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        galleryImageList = new ArrayList<>();
+        galleryAdapter = new GalleryAdapter(this, galleryImageList, false, null); // false for user
+        rvGallery.setAdapter(galleryAdapter);
 
         setupPullToRefresh();    // Gesture 1
         setupDoubleTapCards();   // Gesture 2
         fetchOffers();
+        fetchGallery();
         attachFooter();
+    }
+
+    // ── Fetch Gallery Data from Firestore ──────────────────────────────────
+    private void fetchGallery() {
+        FirebaseManager.getInstance().fetchGalleryImages(new FirebaseManager.GalleryCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> images) {
+                galleryImageList.clear();
+                galleryImageList.addAll(images);
+                galleryAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Toast.makeText(HomeActivity.this, "Failed to load gallery: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ── Gesture 1: Pull-Down Refresh ────────────────────────────────────────
@@ -41,7 +74,8 @@ public class HomeActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(R.color.dark_pink);
         swipeRefresh.setOnRefreshListener(() -> {
             fetchOffers();
-            Toast.makeText(this, "Offers refreshed!", Toast.LENGTH_SHORT).show();
+            fetchGallery();
+            Toast.makeText(this, "Refreshed Data!", Toast.LENGTH_SHORT).show();
         });
     }
 

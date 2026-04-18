@@ -613,6 +613,44 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
+                <!-- 4. PINTEREST STYLE GALLERY -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="42dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Inspiration Gallery"
+                        android:textColor="#3A3A3A"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="Explore our stunning transformations and styles"
+                        android:textColor="#7A5E35"
+                        android:textSize="14sp" />
+
+                    <!-- Needs to be nested scrolling enabled false inside scrollview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_home_gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                        app:spanCount="2"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

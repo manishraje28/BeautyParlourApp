@@ -75,6 +75,10 @@
             android:name=".AppointmentReminderReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".AdminGalleryActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -30,16 +30,19 @@ public class AdminFooterFragment extends Fragment {
         LinearLayout tabServices = view.findViewById(R.id.tab_admin_services);
         LinearLayout tabOffers = view.findViewById(R.id.tab_admin_offers);
         LinearLayout tabProfile = view.findViewById(R.id.tab_admin_profile);
+        LinearLayout tabGallery = view.findViewById(R.id.tab_admin_gallery);
 
         ImageView icBookings = view.findViewById(R.id.ic_admin_bookings);
         ImageView icServices = view.findViewById(R.id.ic_admin_services);
         ImageView icOffers = view.findViewById(R.id.ic_admin_offers);
         ImageView icProfile = view.findViewById(R.id.ic_admin_profile);
+        ImageView icGallery = view.findViewById(R.id.ic_admin_gallery);
 
         TextView tvBookings = view.findViewById(R.id.tv_admin_bookings);
         TextView tvServices = view.findViewById(R.id.tv_admin_services);
         TextView tvOffers = view.findViewById(R.id.tv_admin_offers);
         TextView tvProfile = view.findViewById(R.id.tv_admin_profile);
+        TextView tvGallery = view.findViewById(R.id.tv_admin_gallery);
 
         // Determine active activity to highlight correctly
         String currentActivity = getActivity().getClass().getSimpleName();
@@ -57,12 +60,16 @@ public class AdminFooterFragment extends Fragment {
             case "ProfileActivity":
                 setActive(icProfile, tvProfile);
                 break;
+            case "AdminGalleryActivity":
+                setActive(icGallery, tvGallery);
+                break;
         }
 
         // Setup navigation listeners
         tabBookings.setOnClickListener(v -> navigateTo(AdminDashboardActivity.class));
         tabServices.setOnClickListener(v -> navigateTo(AdminServicesActivity.class));
         tabOffers.setOnClickListener(v -> navigateTo(AdminOffersActivity.class));
+        tabGallery.setOnClickListener(v -> navigateTo(AdminGalleryActivity.class));
         
         tabProfile.setOnClickListener(v -> navigateTo(ProfileActivity.class));
 

@@ -207,6 +207,7 @@ public class FirebaseManager {
             return;
         }
         MediaManager.get().upload(uri)
+                .unsigned("beautypalace")
                 .option("folder", "services") 
                 .callback(new UploadCallback() {
                     @Override
@@ -608,6 +609,73 @@ public class FirebaseManager {
         createBooking(service, date, time, 65.0, callback);
     }
 
+    // ── Manage Dynamic Public Gallery ──────────────────────────────────────────
+    public void uploadGalleryImage(Context context, Uri uri, PhotoUploadCallback callback) {
+        initCloudinaryIfNeeded(context);
+        if (uri == null) {
+            callback.onFailure("No image URI provided");
+            return;
+        }
+        MediaManager.get().upload(uri)
+                .unsigned("beautypalace")
+                .option("folder", "gallery")
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) { }
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) { }
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        Log.d(TAG, "Gallery Image uploaded to Cloudinary: " + url);
+                        callback.onSuccess(url);
+                    }
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        Log.e(TAG, "Cloudinary gallery image upload error: " + error.getDescription());
+                        callback.onFailure(error.getDescription());
+                    }
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) { }
+                })
+                .dispatch();
+    }
+
+    public void addGalleryImage(String imageUrl, ServiceActionCallback callback) {
+        Map<String, Object> imgData = new HashMap<>();
+        imgData.put("imageUrl", imageUrl);
+        imgData.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
+
+        db.collection("gallery")
+                .add(imgData)
+                .addOnSuccessListener(doc -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void fetchGalleryImages(GalleryCallback callback) {
+        db.collection("gallery")
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Map<String, Object>> images = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Map<String, Object> img = new HashMap<>();
+                        img.put("id", doc.getId());
+                        img.put("imageUrl", doc.getString("imageUrl"));
+                        images.add(img);
+                    }
+                    callback.onSuccess(images);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void deleteGalleryImage(String id, ServiceActionCallback callback) {
+        db.collection("gallery").document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     // ── Callbacks ─────────────────────────────────────────────────────────────
     public interface SignUpCallback {
         void onSuccess();
@@ -646,6 +714,11 @@ public class FirebaseManager {
 
     public interface ServiceActionCallback {
         void onSuccess();
+        void onFailure(String error);
+    }
+
+    public interface GalleryCallback {
+        void onSuccess(List<Map<String, Object>> images);
         void onFailure(String error);
     }
 }
