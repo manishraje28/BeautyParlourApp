@@ -163,6 +163,11 @@ public class BookingActivity extends AppCompatActivity {
             selectedTime = time;
         });
         rvTimeSlots.setAdapter(timeSlotAdapter);
+        
+        // Setup initial date selection *after* time slots so the listener doesn't crash on null timeSlotAdapter
+        if (dateAdapter != null) {
+            dateAdapter.selectInitial();
+        }
     }
 
     private void fetchBookedTimesForDate(String date) {
