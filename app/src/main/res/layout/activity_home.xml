@@ -64,47 +64,156 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="4dp"
-                        android:text="Where Elegance Meets Care"
+                        android:text="Where Elegance Meets Care ✨"
                         android:textColor="#7A5E35"
                         android:textSize="16sp"
+                        android:textStyle="italic"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_bp" />
 
-                    <!-- Search Bar -->
+                    <!-- Quick Categories -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginHorizontal="24dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="32dp"
-                        android:background="@drawable/bg_search_bar"
-                        android:elevation="6dp"
-                        android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="16dp"
+                        android:weightSum="4"
                         app:layout_constraintTop_toBottomOf="@id/tv_tagline"
                         app:layout_constraintBottom_toBottomOf="parent">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_search"
-                            app:tint="#B39268" />
-
-                        <EditText
+                        <!-- Category: Hair -->
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="12dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@null"
-                            android:hint="Search"
-                            android:textColorHint="#9E9E9E"
-                            android:textSize="15sp" />
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                app:cardCornerRadius="28dp"
+                                app:cardElevation="6dp"
+                                app:cardBackgroundColor="#FFF5E8"
+                                android:layout_marginBottom="6dp">
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_category_hair"
+                                    app:tint="#B39268" />
+                            </androidx.cardview.widget.CardView>
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_scan"
-                            app:tint="#B39268" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Hair"
+                                android:textColor="#7A5E35"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Category: Makeup -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                app:cardCornerRadius="28dp"
+                                app:cardElevation="6dp"
+                                app:cardBackgroundColor="#FFF5E8"
+                                android:layout_marginBottom="6dp">
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_category_makeup"
+                                    app:tint="#B39268" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Makeup"
+                                android:textColor="#7A5E35"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Category: Skin -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                app:cardCornerRadius="28dp"
+                                app:cardElevation="6dp"
+                                app:cardBackgroundColor="#FFF5E8"
+                                android:layout_marginBottom="6dp">
+                                <ImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_category_skincare"
+                                    app:tint="#B39268" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Skin"
+                                android:textColor="#7A5E35"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Category: Spa -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                app:cardCornerRadius="28dp"
+                                app:cardElevation="6dp"
+                                app:cardBackgroundColor="#FFF5E8"
+                                android:layout_marginBottom="6dp">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_category_spa"
+                                    app:tint="#B39268" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Spa"
+                                android:textColor="#7A5E35"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
