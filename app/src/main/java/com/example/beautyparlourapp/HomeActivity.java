@@ -52,14 +52,15 @@ public class HomeActivity extends AppCompatActivity {
         attachFooter();
     }
 //this is all the java code for gallery and offers in home activity
+
     // ── Fetch Gallery Data from Firestore ──────────────────────────────────
     private void fetchGallery() {
         FirebaseManager.getInstance().fetchGalleryImages(new FirebaseManager.GalleryCallback() {
             @Override
             public void onSuccess(List<Map<String, Object>> images) {
-                galleryImageList.clear();
-                galleryImageList.addAll(images);
-                galleryAdapter.notifyDataSetChanged();
+                galleryImageList.clear();  // Clear old data before adding new
+                galleryImageList.addAll(images); // Add new data to the list
+                galleryAdapter.notifyDataSetChanged(); // Notify adapter to refresh the RecyclerView
             }
 
             @Override
