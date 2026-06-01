@@ -50,8 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         fetchOffers();
         fetchGallery();
         attachFooter();
-    }
-//this is all the java code for gallery and offers in home activity
+    } 
 
     // ── Fetch Gallery Data from Firestore ──────────────────────────────────
     private void fetchGallery() {
